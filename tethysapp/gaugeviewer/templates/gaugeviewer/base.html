@@ -1,0 +1,43 @@
+{% extends "tethys_apps/app_base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}- {{ tethys_app.name }}{% endblock %}
+
+{% block app_icon %}
+  {# The path you provided in your app.py is accessible through the tethys_app.icon context variable #}
+  <img src="{% static tethys_app.icon %}">
+{% endblock %}
+
+{# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
+{% block app_title %}{{ tethys_app.name }}{% endblock %}
+
+{% block app_navigation_items %}
+<div align = "center">
+  <li class="title">Layers to Display</li>
+  <li><input type="checkbox" onClick="P1820.setVisible(!P1820.getVisible());"  id="ch_1820" name="1820" checked>1820</li>
+  <li><input type="checkbox" onClick="P1830.setVisible(!P1830.getVisible());"  id="ch_1830" name="1830" checked>1830</li>
+  <li><input type="checkbox" onClick="P1840.setVisible(!P1840.getVisible());"  id="ch_1840" name="1840" checked>1840</li>
+  <li><input type="checkbox" onClick="P1850.setVisible(!P1850.getVisible());"  id="ch_1850" name="1850" checked>1850</li>
+  <li><input type="checkbox" onClick="P1860.setVisible(!P1860.getVisible());"  id="ch_1860" name="1860" checked>1860</li>
+  <li><input type="checkbox" onClick="P1870.setVisible(!P1870.getVisible());"  id="ch_1870" name="1870" checked>1870</li>
+  <li><input type="checkbox" onClick="P1880.setVisible(!P1880.getVisible());"  id="ch_1880" name="1880" checked>1880</li>
+  </div>
+{% endblock %}
+
+{% block app_content %}
+{% endblock %}
+
+{% block app_actions %}
+{% endblock %}
+
+{% block content_dependent_styles %}
+  {{ block.super }}
+  <link href="{% static 'gaugeviewer/css/main.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  <script src="{% static 'gaugeviewer/js/ol.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gaugeviewer/js/main.js' %}" type="text/javascript"></script>
+{% endblock %}

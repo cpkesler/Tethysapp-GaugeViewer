@@ -1,0 +1,34 @@
+{% extends "gaugeviewer/base.html" %}
+
+{% load staticfiles %}
+
+{% block app_content %}
+    <script src="{% static 'gaugeviewer/css/ol.css' %}" type="text/css"></script>
+
+    <!-- This extra bit of style defines the size of the "map" div tag area that shows up later -->
+    <style>
+      .map {
+        height: 600px;
+        width: 100%;
+      }
+    </style>
+
+  	<!-- Show some information to the user using basic HTML -->
+    <h2>Gauge Viewer</h2>
+
+    <!-- Specify a div tag area that will hold the map itself. -->
+    <!--This is where the map location is defined. It is referenced from the main.js file-->
+    <div id="map" class="map">
+        <!-- We need a piece of real estate for the pop up bubble, within the map space. -->
+        <div id="popup" class="popup"></div>
+    </div>
+
+    <!--The main.js file contains the JavaScript to build the map and do crap with it-->
+
+
+{% endblock %}
+
+{% block app_actions %}
+  <a href="" class="btn btn-default">Next</a>
+  <a href="" class="btn btn-default">Back</a>
+{% endblock %}
