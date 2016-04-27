@@ -10,3 +10,11 @@ def home(request):
     context = {}
 
     return render(request, 'gaugeviewer/home.html', context)
+
+def ahpsgauges(request):
+    """
+    Controller for the app home page.
+    """
+    context = {}
+
+    return render(request, 'gaugeviewer/ahpsgauges.html', context)
