@@ -73,7 +73,7 @@ var element = document.getElementById('popup');
 var popup = new ol.Overlay({
   element: element,
   positioning: 'bottom-center',
-  stopEvent: false
+  stopEvent: true
 });
 
 map.addOverlay(popup);
@@ -104,16 +104,16 @@ map.on('singleclick', function(evt) {
             if (AHPS_url) {
                 var AHPS_Data = dataCall(AHPS_url);
                 var AHPS_Count = AHPS_Data.documentElement.childElementCount;
-                var USGS_Data = dataCall(USGS_url);
-                var USGS_Count = USGS_Data.documentElement.childElementCount;
-
-                console.log(AHPS_url);
-                console.log(USGS_url);
-
-                console.log(AHPS_Data);
-                console.log(AHPS_Count);
-                console.log(USGS_Data);
-                console.log(USGS_Count);
+//                var USGS_Data = dataCall(USGS_url);
+//                var USGS_Count = USGS_Data.documentElement.childElementCount;
+//
+//                console.log(AHPS_url);
+//                console.log(USGS_url);
+//
+//                console.log(AHPS_Data);
+//                console.log(AHPS_Count);
+//                console.log(USGS_Data);
+//                console.log(USGS_Count);
 
                 //This is for AHPS Gauges
                 for (i = 0; i < AHPS_Count; i++) {
@@ -123,6 +123,33 @@ map.on('singleclick', function(evt) {
                     displayContent += '<tr><td>AHPS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
 
+//                //This is for USGS Gauges
+//                for (i = 0; i < USGS_Count; i++) {
+//                    var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
+//                    var waterbody = USGS_Data.documentElement.children[i].attributes['STATION_NM'].value;
+//                    var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
+//                    displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
+//                    }
+//
+//                    displayContent += '</table>';
+//
+//                $(element).popover({
+//                'placement': 'top',
+//                'html': true,
+//                'content': displayContent
+//                  });
+//                $(element).popover('show');
+                };
+
+            if (USGS_url) {
+                var USGS_Data = dataCall(USGS_url);
+                var USGS_Count = USGS_Data.documentElement.childElementCount;
+
+//                console.log(USGS_url);
+//
+//                console.log(USGS_Data);
+//                console.log(USGS_Count);
+
                 //This is for USGS Gauges
                 for (i = 0; i < USGS_Count; i++) {
                     var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
@@ -130,6 +157,7 @@ map.on('singleclick', function(evt) {
                     var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
                     displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
+                };
 
                     displayContent += '</table>';
 
@@ -138,38 +166,12 @@ map.on('singleclick', function(evt) {
                 'html': true,
                 'content': displayContent
                   });
-                $(element).popover('show');
-                };
-
-            if (USGS_url) {
-                var USGS_Data = dataCall(USGS_url);
-                var USGS_Count = USGS_Data.childElementCount;
-
-                console.log(USGS_url);
-
-                console.log(USGS_Data);
-                console.log(USGS_Count);
-
-                //This is for USGS Gauges
-                for (i = 0; i < USGS_Count; i++) {
-                    var gaugeID = USGS_Data.children[i].attributes['GaugeLID'].value;
-                    var waterbody = USGS_Data.children[i].attributes['Waterbody'].value;
-                    var urlLink = USGS_Data.children[i].attributes['URL'].value;
-                    displayContent += '<tr><td>'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
-                    }
-                };
-
-                    displayContent += '</table>';
-                $(element).popover({
-                'placement': 'top',
-                'html': true,
-                'content': displayContent
-                  });
 
                 $(element).popover('show');
-                console.log(displayContent);
+                $(element).next().css('cursor','text');
+//                console.log(displayContent);
             }
-});
+        });
 /*
 map.on('singleclick', function(evt) {
     $(element).popover('destroy');
