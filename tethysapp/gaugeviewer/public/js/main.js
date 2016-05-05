@@ -94,11 +94,16 @@ map.on('singleclick', function(evt) {
 //            var source = AHPS_Source;
 
 // NEED TO MAKE THIS ONLY CREATE URL IF NECESSARY!!!
-            var AHPS_url = AHPS_Source.getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(),
-              {'INFO_FORMAT': 'text/xml', 'FEATURE_COUNT': 50});
-            var USGS_url = USGS_Source.getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(),
-              {'INFO_FORMAT': 'text/xml', 'FEATURE_COUNT': 50});
+            if (document.getElementById("ch_AHPS_Gauges").checked){
+                var AHPS_url = AHPS_Source.getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(),
+                  {'INFO_FORMAT': 'text/xml', 'FEATURE_COUNT': 50});
+            };
 
+            if (document.getElementById("ch_USGS_Gauges").checked){
+                var USGS_url = USGS_Source.getGetFeatureInfoUrl(evt.coordinate, viewResolution, view.getProjection(),
+                  {'INFO_FORMAT': 'text/xml', 'FEATURE_COUNT': 50});
+              };
+              
             var displayContent = '<table border="1"><tbody><tr><th>Gauge Type & ID</th><th>Waterbody</th><th>Link</th></tr>';
 
             if (AHPS_url) {
