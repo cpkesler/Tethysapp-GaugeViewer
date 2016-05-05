@@ -161,7 +161,7 @@ map.on('singleclick', function(evt) {
                     var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
                     var waterbody = USGS_Data.documentElement.children[i].attributes['STATION_NM'].value;
                     var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
-                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/"
+                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/?gaugeid=" + gaugeID +"&waterbody=" + waterbody;
                     displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+usgshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
                 };

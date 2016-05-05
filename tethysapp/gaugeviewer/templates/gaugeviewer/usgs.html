@@ -1,5 +1,5 @@
 {% extends "gaugeviewer/base.html" %}
-
+{% load tethys_gizmos %}
 {% load staticfiles %}
 
 {% block app_navigation_items %}
@@ -9,7 +9,10 @@
 
 {% block app_content %}
   <h4>USGS Data</h4>
-  <p>Gauge ID: </p>
-  <p>Waterbody: </p>
-  <h6>Observed Flow</h6>
+  <p>Gauge ID: {{ gaugeid }}</p>
+  <p>Waterbody: {{waterbody}}</p>
+<div>
+
+{% gizmo plot_view timeseries_plot %}
+  </div>
 {% endblock %}
