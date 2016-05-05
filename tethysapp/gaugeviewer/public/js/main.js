@@ -104,7 +104,7 @@ map.on('singleclick', function(evt) {
                   {'INFO_FORMAT': 'text/xml', 'FEATURE_COUNT': 50});
               };
               
-            var displayContent = '<table border="1"><tbody><tr><th>Gauge Type & ID</th><th>Waterbody</th><th>Link</th></tr>';
+            var displayContent = '<table border="1"><tbody><tr><th>Gauge Type & ID</th><th>Waterbody</th><th>Info</th><th>Link</th></tr>';
 
             if (AHPS_url) {
                 var AHPS_Data = dataCall(AHPS_url);
@@ -125,7 +125,8 @@ map.on('singleclick', function(evt) {
                     var gaugeID = AHPS_Data.documentElement.children[i].attributes['GaugeLID'].value;
                     var waterbody = AHPS_Data.documentElement.children[i].attributes['Waterbody'].value;
                     var urlLink = AHPS_Data.documentElement.children[i].attributes['URL'].value;
-                    displayContent += '<tr><td>AHPS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
+                    var ahpshtml = "http://127.0.0.1:8000/apps/gaugeviewer/ahps/";
+                    displayContent += '<tr><td>AHPS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+ahpshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
 
 //                //This is for USGS Gauges
@@ -160,7 +161,8 @@ map.on('singleclick', function(evt) {
                     var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
                     var waterbody = USGS_Data.documentElement.children[i].attributes['STATION_NM'].value;
                     var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
-                    displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
+                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/"
+                    displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+usgshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
                 };
 

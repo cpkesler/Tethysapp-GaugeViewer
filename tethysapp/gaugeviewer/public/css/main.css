@@ -1,12 +1,12 @@
 /*Puts space between left and right edge of words and border*/
 td {
-    font-size:75%;
+    font-size:65%;
     padding-left: 1em;
     padding-right: 1em;
 }
 
 th {
-    font-size:75%;
+    font-size:65%;
     padding-left: 1em;
     padding-right: 1em;
 }

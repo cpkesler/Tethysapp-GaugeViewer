@@ -1,0 +1,15 @@
+{% extends "gaugeviewer/base.html" %}
+
+{% load staticfiles %}
+
+{% block app_navigation_items %}
+  <li><a href="{% url 'gaugeviewer:home' %}">Return Home</a></li>
+  <li class="active"><a href="{% url 'gaugeviewer:usgs' %}">USGS Data</a></li>
+{% endblock %}
+
+{% block app_content %}
+  <h4>USGS Data</h4>
+  <p>Gauge ID: </p>
+  <p>Waterbody: </p>
+  <h6>Observed Flow</h6>
+{% endblock %}
