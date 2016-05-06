@@ -9,10 +9,14 @@
 
 {% block app_content %}
   <h4>USGS Data</h4>
-  <p>Gauge ID: {{ gaugeid }}</p>
+  <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
-<div>
 
-{% gizmo plot_view timeseries_plot %}
-  </div>
+{% if 'true' in gotdata|lower %}
+   <div>
+   {% gizmo plot_view timeseries_plot %}
+   </div>
+ {% else %}
+   <h2>There is no data available for this location!</h2>
+ {% endif%}
 {% endblock %}

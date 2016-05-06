@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 import urllib2
 from tethys_sdk.gizmos import TimeSeries
+import webbrowser
 
 
 
@@ -17,9 +18,16 @@ def home(request):
 
 def ahps(request):
     """
-    Controller for the app home page.
+    Controller for the app ahps page.
     """
-    context = {}
+    gaugeID = request.GET['gaugeno']
+    waterbody = request.GET['waterbody']
+
+
+    url = 'http://water.weather.gov/resources/hydrographs/{0}_hg.png'.format(gaugeID.lower())
+
+
+    context = {"gauge_figure": url, "gaugeno": gaugeID, "waterbody": waterbody}
 
     return render(request, 'gaugeviewer/ahps.html', context)
 
@@ -29,11 +37,9 @@ def check_digit(num):
         num_str = '0' + num_str
     return num_str
 
-
-
 def usgs(request):
     """
-    Controller for the app home page.
+    Controller for the app usgs page.
     """
     gaugeID = request.GET['gaugeid']
     waterbody = request.GET['waterbody']
@@ -48,8 +54,6 @@ def usgs(request):
     url = 'http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no={0}&referred_module=sw&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
     print url
-    # url2 = 'http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no=11523200&referred_module=sw&period=&begin_date=2015-05-05&end_date=2016-05-04'
-    # print url2
     response = urllib2.urlopen(url)
     data = response.read()
     print data
@@ -67,7 +71,9 @@ def usgs(request):
 
             time_series_list.append([datetime(year, month, day), float(value_str)])
 
-
+    gotdata = False
+    if len(time_series_list) > 0:
+        gotdata = True
 
     print time_series_list
     timeseries_plot = TimeSeries(
@@ -83,6 +89,6 @@ def usgs(request):
         }]
     )
 
-    context = {"gaugeid": gaugeID, "waterbody" : waterbody, "timeseries_plot": timeseries_plot}
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata}
 
     return render(request, 'gaugeviewer/usgs.html', context)

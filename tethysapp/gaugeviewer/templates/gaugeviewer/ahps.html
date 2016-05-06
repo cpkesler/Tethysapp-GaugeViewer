@@ -9,6 +9,10 @@
 
 {% block app_content %}
   <h4>AHPS Data</h4>
-  <p>Gauge ID: </p>
-  <p>Waterbody: </p>
+  <p>Gauge ID: {{gaugeno}}</p>
+  <p>Waterbody: {{waterbody}}</p>
+
+<figure>
+  <img src="{{gauge_figure}}" alt="The Pulpit Rock" >
+</figure>
 {% endblock %}
