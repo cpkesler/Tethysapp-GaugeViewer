@@ -51,7 +51,7 @@ def usgs(request):
 
 
 
-    url = 'http://waterdata.usgs.gov/nwis/dv?cb_00060=on&format=rdb&site_no={0}&referred_module=sw&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
+    url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
     print url
     response = urllib2.urlopen(url)
@@ -62,14 +62,17 @@ def usgs(request):
         if line.startswith("USGS"):
             data_array = line.split('\t')
             time_str = data_array[2]
-            value_str = data_array[3]
+            value_str = data_array[4]
+            time_str = time_str.replace(" ","-")
             time_str_array = time_str.split("-")
             year = int(time_str_array[0])
             month = int(time_str_array[1])
             day = int(time_str_array[2])
+            hour, minute = time_str_array[3].split(":")
+            hourInt = int(hour)
+            minuteInt = int(minute)
 
-
-            time_series_list.append([datetime(year, month, day), float(value_str)])
+            time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
 
     gotdata = False
     if len(time_series_list) > 0:
