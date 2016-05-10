@@ -35,18 +35,38 @@ def ahps(request):
     response = urllib2.urlopen(url1)
     data = response.read()
     # print data
-    xml = et.fromstring(data)
-    print xml.tag
-    for child in xml:
-        print child.tag, child.attrib
+    observedData = []
+    site = et.fromstring(data)
+    print site.tag #Prints site
+    for child in site:
+        if child.tag == "observed":
+            observed = child #This is to add clarity in the next loop
+            for datum in observed:
+                # print datum[0].text
+                # print datum[2].tag
+                # print datum[2].text
+                for field in datum:
+                    # print field
+                    # print field.tag, 'tag'
+                    # print field.attrib, 'attrib'
+                    # print field.text, 'text'
+                    # print field.keys()
+                    # print field.get('name')
+                    if field.get('name') == "Flow":
+                        if field.get('units') == "kcfs":
+                            value = float(field.text)*1000
+                            print value
+                        # print field.text, '******'
+        # print child.tag, child.attrib
     print '**********************************************************'
-    for forecast in xml.findall('forecast'):
-        all = forecast.find()
-        time = forecast.get('timezone')
-        flow = forecast.get('Flow')
-        print all
-        print time
-        print flow
+
+    # for forecast in xml.findall('forecast'):
+    #     all = forecast.find()
+    #     time = forecast.get('timezone')
+    #     flow = forecast.get('Flow')
+    #     print all
+    #     print time
+    #     print flow
 
 
     context = {"gauge_figure": url, "gaugeno": gaugeID, "waterbody": waterbody}

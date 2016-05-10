@@ -126,7 +126,7 @@ map.on('singleclick', function(evt) {
                     var waterbody = AHPS_Data.documentElement.children[i].attributes['Waterbody'].value;
                     var urlLink = AHPS_Data.documentElement.children[i].attributes['URL'].value;
                     var ahpshtml = "http://127.0.0.1:8000/apps/gaugeviewer/ahps/?gaugeno=" + gaugeID +"&waterbody=" + waterbody;
-                    displayContent += '<tr><td>AHPS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+ahpshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
+                    displayContent += '<tr><td>AHPS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+ahpshtml+'" target="_blank">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
 
 //                //This is for USGS Gauges
