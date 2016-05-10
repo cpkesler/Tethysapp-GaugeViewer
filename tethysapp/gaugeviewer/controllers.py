@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import urllib2
 from tethys_sdk.gizmos import TimeSeries
 import webbrowser
+import xml.etree.ElementTree as et
+
 
 
 
@@ -25,6 +27,26 @@ def ahps(request):
 
 
     url = 'http://water.weather.gov/resources/hydrographs/{0}_hg.png'.format(gaugeID.lower())
+
+
+    url1 = 'http://water.weather.gov/ahps2/hydrograph_to_xml.php?gage={0}&output=xml'.format(gaugeID.lower())
+
+    # print url1
+    response = urllib2.urlopen(url1)
+    data = response.read()
+    # print data
+    xml = et.fromstring(data)
+    print xml.tag
+    for child in xml:
+        print child.tag, child.attrib
+    print '**********************************************************'
+    for forecast in xml.findall('forecast'):
+        all = forecast.find()
+        time = forecast.get('timezone')
+        flow = forecast.get('Flow')
+        print all
+        print time
+        print flow
 
 
     context = {"gauge_figure": url, "gaugeno": gaugeID, "waterbody": waterbody}
