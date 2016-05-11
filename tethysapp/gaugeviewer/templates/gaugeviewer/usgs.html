@@ -11,7 +11,8 @@
   <h4>USGS Data</h4>
   <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
-  <p>Waterbody: {{urlLink}}</p>
+  <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
+
 {% if 'true' in gotdata|lower %}
    <div>
    {% gizmo plot_view timeseries_plot %}

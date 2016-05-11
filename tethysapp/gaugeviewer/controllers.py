@@ -1,12 +1,11 @@
+# This file is contains print comments. Simply uncomment the lines and view the terminal to see output.
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 import urllib2
 from tethys_sdk.gizmos import TimeSeries
-import webbrowser
 import xml.etree.ElementTree as et
-
-
 
 
 @login_required()
@@ -18,30 +17,32 @@ def home(request):
 
     return render(request, 'gaugeviewer/home.html', context)
 
+
 def ahps(request):
     """
     Controller for the app ahps page.
     """
     gaugeID = request.GET['gaugeno']
     waterbody = request.GET['waterbody']
-    # urlLink = request.GET['url']
 
-    # url2 = 'http://water.weather.gov/resources/hydrographs/{0}_hg.png'.format(gaugeID.lower())
+    url = 'http://water.weather.gov/ahps2/hydrograph_to_xml.php?gage={0}&output=xml'.format(gaugeID.lower())
+    # print url
 
-    url1 = 'http://water.weather.gov/ahps2/hydrograph_to_xml.php?gage={0}&output=xml'.format(gaugeID.lower())
-
-    # print url1
-    response = urllib2.urlopen(url1)
+    response = urllib2.urlopen(url)
     data = response.read()
     # print data
-    observed_data = []
+
+    display_data = []  #Creates an empty list to contain data for later display
     value = float()
     total = float()
     site = et.fromstring(data)
-    # print site.tag #Prints site
+    # print site.tag
+
+    # The following sections parse returned XML data to find observed and forecast information for display.
+    # The XML data can be viewed by uncommenting the print url line and copying the url into a browser.
     for child in site:
         if child.tag == "observed":
-            observed = child #This is to add clarity in the next loop
+            observed = child  # This is to add clarity in the next loop
             for datum in observed:
                 # print datum[0].text
                 # print datum[2].tag
@@ -72,7 +73,7 @@ def ahps(request):
                         hour_minute = time_split[3].split(":")
                         hour = int(hour_minute[0])
                         minute = int(hour_minute[1])
-                observed_data.append([datetime(year, month, day, hour, minute), value])
+                display_data.append([datetime(year, month, day, hour, minute), value])
         if child.tag == "forecast":
             forecast = child
             for datum in forecast:
@@ -81,9 +82,11 @@ def ahps(request):
                         if field.get('units') == "kcfs":
                             value = float(field.text)*1000
                             # print value
+
                         if field.get('units') =="cfs":
                             value = float(field.text)
                         # print field.text, '******'
+
                     if field.get('timezone') == "UTC":
                         time = field.text
                         time1 = time.replace("T","-")
@@ -94,8 +97,10 @@ def ahps(request):
                         hour_minute = time_split[3].split(":")
                         hour = int(hour_minute[0])
                         minute = int(hour_minute[1])
-                observed_data.append([datetime(year, month, day, hour, minute), value])
-        observed_data.sort()
+
+                display_data.append([datetime(year, month, day, hour, minute), value])
+
+        display_data.sort()  # Due to XML formatting the sheet must be sorted to place forecasts after observations
 
     gotdata = False
     if total > 0:
@@ -110,7 +115,7 @@ def ahps(request):
             y_axis_units='cfs',
             series=[{
                 'name': 'Streamflow',
-                'data': observed_data
+                'data': display_data
             }]
     )
         # print child.tag, child.attrib
@@ -129,6 +134,7 @@ def ahps(request):
                         if field.get('units') =="ft":
                             value_stage = float(field.text)
                             total_stage += value_stage
+
                     if field.get('timezone') == "UTC":
                         time = field.text
                         time1 = time.replace("T","-")
@@ -139,6 +145,7 @@ def ahps(request):
                         hour_minute = time_split[3].split(":")
                         hour = int(hour_minute[0])
                         minute = int(hour_minute[1])
+
                 observed_stage_data.append([datetime(year, month, day, hour, minute), value_stage])
 
     gotdata_stage = False
@@ -158,10 +165,10 @@ def ahps(request):
             }]
     )
 
-
     context = {"gaugeno": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "timeseries_plot_stage": timeseries_plot_stage, "gotdata_stage": gotdata_stage}
 
     return render(request, 'gaugeviewer/ahps.html', context)
+
 
 def check_digit(num):
     num_str = str(num)
@@ -169,27 +176,27 @@ def check_digit(num):
         num_str = '0' + num_str
     return num_str
 
+
 def usgs(request):
     """
     Controller for the app usgs page.
     """
     gaugeID = request.GET['gaugeid']
     waterbody = request.GET['waterbody']
-    # urlLink = request.GET['urlLink']
     t_now = datetime.now()
     now_str = "{0}-{1}-{2}".format(t_now.year,check_digit(t_now.month),check_digit(t_now.day))
     two_weeks = timedelta(days=14)
     t_2_weeks_ago = t_now - two_weeks
     two_weeks_ago_str = "{0}-{1}-{2}".format(t_2_weeks_ago.year,check_digit(t_2_weeks_ago.month),check_digit(t_2_weeks_ago.day))
 
+    url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
+    print url
 
-    url1 = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
-
-    print url1
-    response = urllib2.urlopen(url1)
+    response = urllib2.urlopen(url)
     data = response.read()
     print data
+
     time_series_list = []
     for line in data.splitlines():
         if line.startswith("USGS"):
@@ -204,7 +211,6 @@ def usgs(request):
             hour, minute = time_str_array[3].split(":")
             hourInt = int(hour)
             minuteInt = int(minute)
-
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
 
     gotdata = False
