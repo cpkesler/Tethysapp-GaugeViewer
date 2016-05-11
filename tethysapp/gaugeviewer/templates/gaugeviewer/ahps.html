@@ -11,12 +11,23 @@
   <h4>AHPS Data</h4>
   <p>Gauge ID: {{gaugeno}}</p>
   <p>Waterbody: {{waterbody}}</p>
+  <p>Link to website: {{url}}</p>
 
 {% if 'true' in gotdata|lower %}
    <div>
    {% gizmo plot_view timeseries_plot %}
    </div>
  {% else %}
-   <h2>There is flow data available for this location!</h2>
+   <h3>There is flow data available for this location!</h3>
+ {% endif%}
+
+<br></br>
+
+{% if 'true' in gotdata_stage|lower %}
+   <div>
+   {% gizmo plot_view timeseries_plot_stage %}
+   </div>
+ {% else %}
+   <h3>There is stage data available for this location!</h3>
  {% endif%}
 {% endblock %}

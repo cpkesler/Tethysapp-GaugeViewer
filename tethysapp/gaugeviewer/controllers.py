@@ -24,8 +24,9 @@ def ahps(request):
     """
     gaugeID = request.GET['gaugeno']
     waterbody = request.GET['waterbody']
+    # urlLink = request.GET['url']
 
-    # url = 'http://water.weather.gov/resources/hydrographs/{0}_hg.png'.format(gaugeID.lower())
+    # url2 = 'http://water.weather.gov/resources/hydrographs/{0}_hg.png'.format(gaugeID.lower())
 
     url1 = 'http://water.weather.gov/ahps2/hydrograph_to_xml.php?gage={0}&output=xml'.format(gaugeID.lower())
 
@@ -95,15 +96,10 @@ def ahps(request):
                         minute = int(hour_minute[1])
                 observed_data.append([datetime(year, month, day, hour, minute), value])
         observed_data.sort()
-        # print observed_data
 
     gotdata = False
     if total > 0:
         gotdata = True
-
-    # def time_series_list(list):
-    # time_series_list([datetime(year, month, day, hour, minute), float(value)])
-    # print time_series_list
 
     timeseries_plot = TimeSeries(
             height='500px',
@@ -120,16 +116,50 @@ def ahps(request):
         # print child.tag, child.attrib
     print '**********************************************************'
 
-    # for forecast in xml.findall('forecast'):
-    #     all = forecast.find()
-    #     time = forecast.get('timezone')
-    #     flow = forecast.get('Flow')
-    #     print all
-    #     print time
-    #     print flow
+    observed_stage_data = []
+    value_stage = float()
+    total_stage = float()
+    site = et.fromstring(data)
+    for child in site:
+        if child.tag == "observed":
+            observed = child #This is to add clarity in the next loop
+            for datum in observed:
+                for field in datum:
+                    if field.get('name') == "Stage":
+                        if field.get('units') =="ft":
+                            value_stage = float(field.text)
+                            total_stage += value_stage
+                    if field.get('timezone') == "UTC":
+                        time = field.text
+                        time1 = time.replace("T","-")
+                        time_split = time1.split("-")
+                        year = int(time_split[0])
+                        month = int(time_split[1])
+                        day = int(time_split[2])
+                        hour_minute = time_split[3].split(":")
+                        hour = int(hour_minute[0])
+                        minute = int(hour_minute[1])
+                observed_stage_data.append([datetime(year, month, day, hour, minute), value_stage])
+
+    gotdata_stage = False
+    if total_stage > 0:
+        gotdata_stage = True
+
+    timeseries_plot_stage = TimeSeries(
+            height='500px',
+            width='500px',
+            engine='highcharts',
+            title='Stage Plot',
+            y_axis_title='Stage',
+            y_axis_units='ft',
+            series=[{
+                'name': 'Streamflow',
+                'data': observed_stage_data
+            }]
+    )
 
 
-    context = {"gaugeno": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata}
+    context = {"gaugeno": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "timeseries_plot_stage": timeseries_plot_stage, "gotdata_stage": gotdata_stage}
 
     return render(request, 'gaugeviewer/ahps.html', context)
 
@@ -145,6 +175,7 @@ def usgs(request):
     """
     gaugeID = request.GET['gaugeid']
     waterbody = request.GET['waterbody']
+    # urlLink = request.GET['urlLink']
     t_now = datetime.now()
     now_str = "{0}-{1}-{2}".format(t_now.year,check_digit(t_now.month),check_digit(t_now.day))
     two_weeks = timedelta(days=14)
@@ -153,10 +184,10 @@ def usgs(request):
 
 
 
-    url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
+    url1 = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
-    print url
-    response = urllib2.urlopen(url)
+    print url1
+    response = urllib2.urlopen(url1)
     data = response.read()
     print data
     time_series_list = []

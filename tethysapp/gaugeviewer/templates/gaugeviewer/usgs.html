@@ -11,12 +11,12 @@
   <h4>USGS Data</h4>
   <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
-
+  <p>Waterbody: {{urlLink}}</p>
 {% if 'true' in gotdata|lower %}
    <div>
    {% gizmo plot_view timeseries_plot %}
    </div>
  {% else %}
-   <h2>There is no data available for this location in the past 2 weeks!</h2>
+   <h3>There is no data available for this location in the past 2 weeks!</h3>
  {% endif%}
 {% endblock %}
