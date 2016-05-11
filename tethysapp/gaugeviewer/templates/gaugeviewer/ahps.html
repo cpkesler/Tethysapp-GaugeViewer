@@ -1,6 +1,6 @@
 {% extends "gaugeviewer/base.html" %}
-
 {% load staticfiles %}
+{% load tethys_gizmos %}
 
 {% block app_navigation_items %}
   <li><a href="{% url 'gaugeviewer:home' %}">Return Home</a></li>
@@ -12,7 +12,11 @@
   <p>Gauge ID: {{gaugeno}}</p>
   <p>Waterbody: {{waterbody}}</p>
 
-<figure>
-  <img src="{{gauge_figure}}" alt="The Pulpit Rock" >
-</figure>
+{% if 'true' in gotdata|lower %}
+   <div>
+   {% gizmo plot_view timeseries_plot %}
+   </div>
+ {% else %}
+   <h2>There is flow data available for this location!</h2>
+ {% endif%}
 {% endblock %}
