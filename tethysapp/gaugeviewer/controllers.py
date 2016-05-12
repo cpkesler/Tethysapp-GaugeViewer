@@ -8,7 +8,7 @@ from tethys_sdk.gizmos import TimeSeries
 import xml.etree.ElementTree as et
 from tethys_sdk.gizmos import DatePicker
 from tethys_sdk.gizmos import Button
-
+import csv
 
 @login_required()
 def home(request):
@@ -299,6 +299,8 @@ def date(request):
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
 
     print time_series_list
+
+
 
 
     context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end}
