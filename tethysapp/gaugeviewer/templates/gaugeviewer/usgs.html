@@ -13,6 +13,13 @@
   <p>Waterbody: {{waterbody}}</p>
   <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
 
+<form action="/apps/gaugeviewer/date/" method="post">
+     {% csrf_token %}
+{% gizmo date_picker date_picker1 %}
+{% gizmo date_picker date_picker2 %}
+{% gizmo button single_button %}
+ </form>
+
 {% if 'true' in gotdata|lower %}
    <div>
    {% gizmo plot_view timeseries_plot %}

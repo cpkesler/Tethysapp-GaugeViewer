@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import urllib2
 from tethys_sdk.gizmos import TimeSeries
 import xml.etree.ElementTree as et
+from tethys_sdk.gizmos import DatePicker
+from tethys_sdk.gizmos import Button
 
 
 @login_required()
@@ -231,6 +233,74 @@ def usgs(request):
         }]
     )
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata}
+
+    date_picker1 = DatePicker(name='date_start',
+                             display_text='Download Start Date',
+                             autoclose=True,
+                             format='yyyy-mm-dd',
+                             start_date='2/15/2014',
+                             start_view='month',
+                             today_button=True,
+                             initial='2016-01-01')
+
+    date_picker2 = DatePicker(name='date_end',
+                             display_text='Download End Date',
+                             autoclose=True,
+                             format='yyyy-mm-dd',
+                             start_date='2/15/2014',
+                             start_view='month',
+                             today_button=True,
+                             initial='2016-05-15')
+
+    single_button = Button(display_text='Download Data',
+                           name='Download Data',
+                           attributes={"onclick": "alert(this.name);"},
+                           submit=True)
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
 
     return render(request, 'gaugeviewer/usgs.html', context)
+
+
+def date(request):
+    """
+    Controller for the app home page.
+    """
+	# print '11111111111111111111111111111111111111111111111111111'
+    # gaugeID = request.GET['gaugeno']
+    gaugeID = 10163000
+    date_start = request.POST['date_start']
+    # print date_start
+    date_end = request.POST['date_end']
+    # print date_end
+
+    url_dl = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
+    # print url_dl
+
+    response = urllib2.urlopen(url_dl)
+    data = response.read()
+    # print data
+
+    time_series_list = []
+    for line in data.splitlines():
+        if line.startswith("USGS"):
+            data_array = line.split('\t')
+            time_str = data_array[2]
+            value_str = data_array[4]
+            if value_str == "Ice":
+                value_str = "0"
+            time_str = time_str.replace(" ","-")
+            time_str_array = time_str.split("-")
+            year = int(time_str_array[0])
+            month = int(time_str_array[1])
+            day = int(time_str_array[2])
+            hour, minute = time_str_array[3].split(":")
+            hourInt = int(hour)
+            minuteInt = int(minute)
+            time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
+
+    print time_series_list
+
+
+    context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end}
+
+    return render(request, 'gaugeviewer/date.html', context)
