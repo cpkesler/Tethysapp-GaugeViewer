@@ -2,6 +2,8 @@
 
 {% load staticfiles %}
 
+{% load tethys_gizmos %}
+
 {% block title %}- {{ tethys_app.name }}{% endblock %}
 
 {% block app_icon %}
@@ -12,7 +14,9 @@
 {# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
+{% block app_navigation_items %}
 
+{% endblock %}
 
 {% block app_content %}
 {% endblock %}
@@ -23,6 +27,7 @@
 {% block content_dependent_styles %}
   {{ block.super }}
   <link href="{% static 'gaugeviewer/css/main.css' %}" rel="stylesheet"/>
+  <link href="{% static 'gaugeviewer/vendor/openlayers3.8.2/ol.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block scripts %}

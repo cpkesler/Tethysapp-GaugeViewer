@@ -13,7 +13,7 @@
   <p>Waterbody: {{waterbody}}</p>
   <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
 
-<form action="/apps/gaugeviewer/usgs/" method="post">
+<form action="/apps/gaugeviewer/usgs1/" method="post">
      {% csrf_token %}
 {% gizmo date_picker date_picker1 %}
 {% gizmo date_picker date_picker2 %}

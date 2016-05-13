@@ -9,6 +9,7 @@ import xml.etree.ElementTree as et
 from tethys_sdk.gizmos import DatePicker
 from tethys_sdk.gizmos import Button
 import csv
+from django.http import HttpResponse
 
 @login_required()
 def home(request):
@@ -183,15 +184,43 @@ def usgs(request):
     """
     Controller for the app usgs page.
     """
-    gaugeID = request.GET['gaugeid']
-    waterbody = request.GET['waterbody']
-    t_now = datetime.now()
-    now_str = "{0}-{1}-{2}".format(t_now.year,check_digit(t_now.month),check_digit(t_now.day))
-    two_weeks = timedelta(days=14)
-    t_2_weeks_ago = t_now - two_weeks
-    two_weeks_ago_str = "{0}-{1}-{2}".format(t_2_weeks_ago.year,check_digit(t_2_weeks_ago.month),check_digit(t_2_weeks_ago.day))
+    # gaugeID = request.GET['gaugeid']
+    # waterbody = request.GET['waterbody']
 
-    url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
+    try:
+        request.GET['start']
+    except:
+        gaugeID = request.POST['gaugeid']
+        waterbody = request.POST['waterbody']
+        date_start = request.POST['date_start']
+        date_end = request.POST['date_end']
+    else:
+        gaugeID = request.GET['gaugeid']
+        waterbody = request.GET['waterbody']
+        date_start = request.GET['start']
+        date_end = request.GET['end']
+
+    # if request.GET['start']:
+    #     date_start = request.GET['start']
+    # else:
+    #     date_start = request.POST['date_start']
+    #
+    # if request.GET['end']:
+    #     date_end = request.GET['end']
+    # else:
+    #     date_end = request.POST['date_end']
+
+    # date_start = request.POST['date_start']
+    # date_end = request.POST['date_end']
+
+    # t_now = datetime.now()
+    # now_str = "{0}-{1}-{2}".format(t_now.year,check_digit(t_now.month),check_digit(t_now.day))
+    # two_weeks = timedelta(days=14)
+    # t_2_weeks_ago = t_now - two_weeks
+    # two_weeks_ago_str = "{0}-{1}-{2}".format(t_2_weeks_ago.year,check_digit(t_2_weeks_ago.month),check_digit(t_2_weeks_ago.day))
+
+    # url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
+    url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
 
     print url
 
@@ -235,43 +264,42 @@ def usgs(request):
 
 
     date_picker1 = DatePicker(name='date_start',
-                             display_text='Download Start Date',
+                             display_text='Start Date',
                              autoclose=True,
                              format='yyyy-mm-dd',
-                             start_date='2/15/2014',
+                             # start_date='2015-12-01',
                              start_view='month',
                              today_button=True,
-                             initial='2016-01-01')
+                             # initial= t_2_weeks_ago.strftime('%Y-%m-%d'))
+                             initial= date_start)
 
     date_picker2 = DatePicker(name='date_end',
-                             display_text='Download End Date',
+                             display_text='End Date',
                              autoclose=True,
                              format='yyyy-mm-dd',
-                             start_date='2/15/2014',
+                             # start_date='2016-02-01',
                              start_view='month',
                              today_button=True,
-                             initial='2016-05-15')
+                             # initial=t_now.strftime('%Y-%m-%d'))
+                             initial= date_end)
 
-    single_button = Button(display_text='Download Data',
-                           name='Download Data',
-                           attributes={"onclick": "alert(this.name);"},
+    single_button = Button(display_text='Generate New Graph',
+                           name='Generate New Graph',
+                           attributes={""},
                            submit=True)
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
+
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "date_start": date_start, "date_end": date_end, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
 
     return render(request, 'gaugeviewer/usgs.html', context)
 
 
-def date(request):
+def usgs1(request):
     """
     Controller for the app home page.
     """
-	# print '11111111111111111111111111111111111111111111111111111'
-    # gaugeID = request.GET['gaugeno']
     gaugeID = 10163000
     date_start = request.POST['date_start']
-    # print date_start
     date_end = request.POST['date_end']
-    # print date_end
 
     url_dl = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
     # print url_dl
@@ -298,11 +326,51 @@ def date(request):
             minuteInt = int(minute)
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
 
+    # print time_series_list
+
+    gotdata = False
+    if len(time_series_list) > 0:
+        gotdata = True
+
     print time_series_list
+    timeseries_plot = TimeSeries(
+        height='500px',
+        width='500px',
+        engine='highcharts',
+        title='Streamflow Plot',
+        y_axis_title='Flow',
+        y_axis_units='cfs',
+        series=[{
+            'name': 'Streamflow',
+            'data': time_series_list
+        }]
+    )
+
+    date_picker1 = DatePicker(name='date_start',
+                              display_text='Start Date',
+                              autoclose=True,
+                              format='yyyy-mm-dd',
+                              start_date='2/15/2014',
+                              start_view='month',
+                              today_button=True,
+                              initial='yyyy-mm-dd')
+
+    date_picker2 = DatePicker(name='date_end',
+                              display_text='End Date',
+                              autoclose=True,
+                              format='yyyy-mm-dd',
+                              start_date='2/15/2014',
+                              start_view='month',
+                              today_button=True,
+                              initial='yyyy-mm-dd')
+
+    single_button = Button(display_text='Generate New Graph',
+                           name='Generate New Graph',
+                           attributes={""},
+                           submit=True)
 
 
 
+    context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end, "time_series_list": time_series_list, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
 
-    context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end}
-
-    return render(request, 'gaugeviewer/date.html', context)
+    return render(request, 'gaugeviewer/usgs1.html', context)

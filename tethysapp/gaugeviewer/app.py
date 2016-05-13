@@ -32,9 +32,9 @@ class Gaugeviewer(TethysAppBase):
                     UrlMap(name='usgs',
                            url='usgs',
                            controller='gaugeviewer.controllers.usgs'),
-                    UrlMap(name='date',
-                           url='date',
-                           controller='gaugeviewer.controllers.date'),
+                    UrlMap(name='usgs',
+                           url='usgs1',
+                           controller='gaugeviewer.controllers.usgs1'),
                     )
 
         return url_maps
