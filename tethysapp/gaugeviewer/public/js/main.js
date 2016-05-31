@@ -78,7 +78,29 @@ var popup = new ol.Overlay({
 
 map.addOverlay(popup);
 
+//find current time
+var date = new Date();
 
+var yyyy = date.getFullYear().toString();
+var mm = (date.getMonth()+1).toString();
+var dd  = date.getDate().toString();
+
+var mmChars = mm.split('');
+var ddChars = dd.split('');
+
+var datestringnow = yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
+
+
+//Find the gaugeid and waterbody when using the generate new graph button
+$(function () {
+    $('#gaugeid').val(window.location.search.split('&')[0].split('=')[1])
+});
+
+$(function () {
+    $('#waterbody').val(window.location.search.split('&')[1].replace(/%20/g,' ').split('=')[1])
+});
+
+//Click funtion to choose gauge on map
 map.on('singleclick', function(evt) {
     $(element).popover('destroy');
         if (map.getTargetElement().style.cursor == "pointer"){
@@ -159,7 +181,7 @@ map.on('singleclick', function(evt) {
                     var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
                     var waterbody = USGS_Data.documentElement.children[i].attributes['STATION_NM'].value;
                     var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
-                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/?gaugeid=" + gaugeID +"&waterbody=" + waterbody+"&start=2016-04-29&end=2016-05-20";
+                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/?gaugeid=" + gaugeID +"&waterbody=" + waterbody+"&start=2016-05-31&end=" + datestringnow;
                     displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+usgshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
                 };

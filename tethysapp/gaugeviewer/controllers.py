@@ -184,25 +184,27 @@ def usgs(request):
     """
     Controller for the app usgs page.
     """
-    gaugeID = request.GET['gaugeid']
-    waterbody = request.GET['waterbody']
-
+    # gaugeID = request.GET['gaugeid']
+    # waterbody = request.GET['waterbody']
+    print request, '^^^^^^^^^^^^^^^^^^^'
     try:
         request.GET['start']
     except:
-        gaugeID = request.POST['gaugeid']
-        waterbody = request.POST['waterbody']
-        date_start = request.POST['date_start']
-        date_end = request.POST['date_end']
+        gaugeID = request.GET['gaugeid']
+        waterbody = request.GET['waterbody']
+        date_start = request.GET['date_start']
+        date_end = request.GET['date_end']
     else:
         gaugeID = request.GET['gaugeid']
         waterbody = request.GET['waterbody']
         date_start = request.GET['start']
         date_end = request.GET['end']
 
+
     print date_start
     print date_end
     print '********************************************************'
+    print gaugeID
 
     # if request.GET['start']:
     #     date_start = request.GET['start']
@@ -225,7 +227,7 @@ def usgs(request):
 
     # url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
-    url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
+    url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
     # if date_start <> "yyyy-mm-dd":
     #     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
 
@@ -279,7 +281,7 @@ def usgs(request):
                              start_view='month',
                              today_button=True,
                              # initial= t_2_weeks_ago.strftime('%Y-%m-%d'))
-                             initial= two_weeks_ago_str)
+                             initial= 'yyyy-mm-dd')
 
     date_picker2 = DatePicker(name='date_end',
                              display_text='End Date',
@@ -289,7 +291,7 @@ def usgs(request):
                              start_view='month',
                              today_button=True,
                              # initial=t_now.strftime('%Y-%m-%d'))
-                             initial= now_str)
+                             initial= 'yyyy-mm-dd')
 
     single_button = Button(display_text='Generate New Graph',
                            name='Generate New Graph',
