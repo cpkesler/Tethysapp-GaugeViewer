@@ -4,7 +4,6 @@
 
 {% block app_navigation_items %}
   <li><a href="{% url 'gaugeviewer:home' %}">Return Home</a></li>
-  <li class="active"><a href="{% url 'gaugeviewer:usgs' %}">USGS Data</a></li>
 {% endblock %}
 
 {% block app_content %}
@@ -27,6 +26,12 @@
  {% else %}
    <h3>There is no data available for this location for this time frame!</h3>
  {% endif%}
+
+
+<div>
+    {% gizmo plot_view timeseries_plot_api %}
+</div>
+
 {% endblock %}
 
 {% block scripts %}

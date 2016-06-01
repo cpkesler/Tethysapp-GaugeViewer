@@ -163,7 +163,7 @@ def ahps(request):
             y_axis_title='Stage',
             y_axis_units='ft',
             series=[{
-                'name': 'Streamflow',
+                'name': 'Stage',
                 'data': observed_stage_data
             }]
     )
@@ -186,7 +186,7 @@ def usgs(request):
     """
     # gaugeID = request.GET['gaugeid']
     # waterbody = request.GET['waterbody']
-    print request, '^^^^^^^^^^^^^^^^^^^'
+
     try:
         request.GET['start']
     except:
@@ -201,10 +201,10 @@ def usgs(request):
         date_end = request.GET['end']
 
 
-    print date_start
-    print date_end
-    print '********************************************************'
-    print gaugeID
+    # print date_start
+    # print date_end
+    # print '********************************************************'
+    # print gaugeID
 
     # if request.GET['start']:
     #     date_start = request.GET['start']
@@ -254,10 +254,37 @@ def usgs(request):
             hourInt = int(hour)
             minuteInt = int(minute)
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
-
+            print time_series_list
     gotdata = False
     if len(time_series_list) > 0:
         gotdata = True
+
+    def getNWMWaterML(config, ID, date_start):
+        url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
+                              '&lon=-98&lat=38.5&date=' + date_start + '&time=06&lag=t00z')
+        # url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=medium_range&COMID=10376606&lon=-98&lat=38.5&date=2016-05-28&time=06&lag=t00z')
+        # data = url_api.read()
+
+
+        x = data.split('dateTimeUTC=')
+        x.pop(0)
+
+        time_series_list_api = []
+        max_value_list = []
+        for elm in x:
+            info = elm.split(' ')
+            time1 = info[0].replace('T',' ')
+            time2 = time1.replace('"','')
+            time = time2[:-3]
+            val = info[7].split('<')
+            value = val[0].replace('>','')
+            time_series_list_api.append([time, value])
+
+        return time_series_list_api
+        print time_series_list_api
+
+    print getNWMWaterML('medium', '10376606', '2016-05-28')
+    time_series_api = getNWMWaterML('medium', '10376606', '2016-05-28')
 
     # print time_series_list
     timeseries_plot = TimeSeries(
@@ -270,6 +297,19 @@ def usgs(request):
         series=[{
             'name': 'Streamflow',
             'data': time_series_list
+        }]
+    )
+
+    timeseries_plot_api = TimeSeries(
+        height='500px',
+        width='500px',
+        engine='highcharts',
+        title='Streamflow Forecast',
+        y_axis_title='Streamflow',
+        y_axis_units='ft',
+        series=[{
+            'name': 'Streamflow',
+            'data': time_series_api
         }]
     )
 
@@ -298,7 +338,7 @@ def usgs(request):
                            attributes={""},
                            submit=True)
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button, "date_start": date_start, "date_end": date_end}
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "timeseries_plot": timeseries_plot, "timeseries_plot_api": timeseries_plot_api, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button, "date_start": date_start, "date_end": date_end}
 
     return render(request, 'gaugeviewer/usgs.html', context)
 
@@ -384,3 +424,35 @@ def usgs(request):
 #     context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end, "time_series_list": time_series_list, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
 #
 #     return render(request, 'gaugeviewer/usgs1.html', context)
+
+@login_required()
+def python(request):
+    """
+    Controller for the app home page.
+    """
+    def getNWMWaterML(config, ID, date_start):
+        url = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
+                              '&lon=-98&lat=38.5&date=' + date_start + '&time=06&lag=t00z')
+        data = url.read()
+
+
+        x = data.split('dateTimeUTC=')
+        x.pop(0)
+
+        time_series_list = []
+        max_value_list = []
+        for elm in x:
+            info = elm.split(' ')
+            time = info[0].replace('T',' ')
+            val = info[7].split('<')
+            value = val[0].replace('>','')
+            time_series_list.append([time, value])
+
+        return time_series_list
+
+    print getNWMWaterML('medium', '10376606', '2016-05-28')
+
+    context = {}
+
+    return render(request, 'gaugeviewer/python.html', context)
+
