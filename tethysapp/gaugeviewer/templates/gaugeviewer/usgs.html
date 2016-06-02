@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block app_content %}
-  <h4>USGS Data</h4>
+  <h3>USGS Data</h3>
   <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
   <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
@@ -32,15 +32,21 @@
    {% gizmo plot_view timeseries_plot %}
    </div>
  {% else %}
-   <h4>There is no data available for this location for this time frame!</h4>
+   <h6>There is no data available for this location for this time frame!</h6>
  {% endif%}
 
-<h4>Streamflow Forecast</h4>
-<p>COMID: {{comid}}</p>
-<p>Range: {{forecast_range}}</p>
-<div>
-    {% gizmo plot_view timeseries_plot_api %}
-</div>
+<h3>Streamflow Forecast</h3>
+
+   <h6>Please select a Forecast Range, COMID, and Forecast Date!</h6>
+
+    <p>COMID: {{comid}}</p>
+    <p>Range: {{forecast_range}}</p>
+   <div>
+       {% gizmo plot_view timeseries_plot_api %}
+   </div>
+
+
+
 
 {% endblock %}
 

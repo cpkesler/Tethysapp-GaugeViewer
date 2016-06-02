@@ -318,6 +318,10 @@ def usgs(request):
             time_series_list_api.append([datetime(year, month, day, hourInt, minuteInt), value2])
             # print time_series_list_api, 'pppppppppppppppppppppppppppppppppppppppppppp'
 
+        # gotdata_api = False
+        # if len(time_series_list_api) > 0:
+        #     gotdata_api = True
+
     # def getNWMWaterML(config, ID, date_start):
     #     url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
     #                           '&lon=-98&lat=38.5&date=' + date_start + '&time=06&lag=t00z')
