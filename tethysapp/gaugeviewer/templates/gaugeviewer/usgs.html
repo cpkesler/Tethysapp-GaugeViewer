@@ -32,10 +32,12 @@
    {% gizmo plot_view timeseries_plot %}
    </div>
  {% else %}
-   <h3>There is no data available for this location for this time frame!</h3>
+   <h4>There is no data available for this location for this time frame!</h4>
  {% endif%}
 
-
+<h4>Streamflow Forecast</h4>
+<p>COMID: {{comid}}</p>
+<p>Range: {{forecast_range}}</p>
 <div>
     {% gizmo plot_view timeseries_plot_api %}
 </div>

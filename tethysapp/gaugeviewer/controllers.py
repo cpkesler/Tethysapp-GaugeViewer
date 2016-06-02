@@ -190,9 +190,12 @@ def usgs(request):
     # gaugeID = request.GET['gaugeid']
     # waterbody = request.GET['waterbody']
 
-    try:
-        request.GET['start']
-    except:
+    start = request.GET.get("start", None)
+    comid = None
+    forecast_range = None
+    forecast_date = None
+
+    if start is None:
         gaugeID = request.GET['gaugeid']
         waterbody = request.GET['waterbody']
         date_start = request.GET['date_start']
@@ -200,6 +203,7 @@ def usgs(request):
         forecast_range = request.GET['forecast_range']
         comid = request.GET['comid']
         forecast_date = request.GET['forecast_date']
+
     else:
         gaugeID = request.GET['gaugeid']
         waterbody = request.GET['waterbody']
@@ -210,8 +214,12 @@ def usgs(request):
         # forecast_date = request.GET['forecast_date']
 
     # print forecast_range, '888888888888888888888888888888888888888'
-    # print comid, '333333333333333333333333333333333'
+    # # print comid, '333333333333333333333333333333333'
     # print forecast_date , '111111111111111111111111111111111'
+
+    # forecast_range = 'medium'
+    # comid = '10375794'
+    # forecast_date = '2016-05-29'
 
 
     # if request.POST:
@@ -244,11 +252,12 @@ def usgs(request):
 
     # url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
 
+
     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
     # if date_start <> "yyyy-mm-dd":
     #     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
 
-    # print url
+    print url
 
     response = urllib2.urlopen(url)
     data = response.read()
@@ -278,36 +287,36 @@ def usgs(request):
         gotdata = True
 
     # url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=medium_range&COMID=10375768&lon=-98&lat=38.5&date=2016-05-28&time=06&lag=t00z')
-    url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time=06&lag=t00z'.format(forecast_range, comid, forecast_date))
-    data_api = url_api.read()
-
-
-
-    x = data_api.split('dateTimeUTC=')
-    x.pop(0)
-
     time_series_list_api = []
-    for elm in x:
-        info = elm.split(' ')
-        time1 = info[0].replace('T',' ')
-        time2 = time1.replace('"','')
-        time3 = time2[:-3]
-        time4 = time3.split(' ')
-        time5 = time4[0].split('-')
-        timedate = time5
-        year = int(timedate[0])
-        month = int(timedate[1])
-        day = int(timedate[2])
-        timetime = time4[1]
-        hour = timetime[0]
-        minute = timetime[1]
-        hourInt = int(hour)
-        minuteInt = int(minute)
-        value = info[7].split('<')
-        value1 = value[0].replace('>','')
-        value2 = float(value1)
-        time_series_list_api.append([datetime(year, month, day, hourInt, minuteInt), value2])
-        # print time_series_list_api, 'pppppppppppppppppppppppppppppppppppppppppppp'
+    if comid is not None:
+        url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time=06&lag=t00z'.format(forecast_range, comid, forecast_date))
+        data_api = url_api.read()
+
+        x = data_api.split('dateTimeUTC=')
+        x.pop(0)
+
+
+        for elm in x:
+            info = elm.split(' ')
+            time1 = info[0].replace('T',' ')
+            time2 = time1.replace('"','')
+            time3 = time2[:-3]
+            time4 = time3.split(' ')
+            time5 = time4[0].split('-')
+            timedate = time5
+            year = int(timedate[0])
+            month = int(timedate[1])
+            day = int(timedate[2])
+            timetime = time4[1]
+            hour = timetime[0]
+            minute = timetime[1]
+            hourInt = int(hour)
+            minuteInt = int(minute)
+            value = info[7].split('<')
+            value1 = value[0].replace('>','')
+            value2 = float(value1)
+            time_series_list_api.append([datetime(year, month, day, hourInt, minuteInt), value2])
+            # print time_series_list_api, 'pppppppppppppppppppppppppppppppppppppppppppp'
 
     # def getNWMWaterML(config, ID, date_start):
     #     url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
@@ -383,7 +392,7 @@ def usgs(request):
                              # initial=t_now.strftime('%Y-%m-%d'))
                              initial= now_str)
 
-    single_button = Button(display_text='Generate New Graph',
+    single_button = Button(display_text='Generate New Graphs',
                            name='Generate New Graph',
                            attributes={""},
                            submit=True)
@@ -398,7 +407,7 @@ def usgs(request):
                               format='yyyy-mm-dd',
                               start_view='month',
                               today_button=True,
-                              initial='yyyy-mm-dd')
+                              initial='2016-05-29')
 
     select_input = SelectInput(display_text='Forecast Size',
                                 name='forecast_range',

@@ -78,7 +78,7 @@ var popup = new ol.Overlay({
 
 map.addOverlay(popup);
 
-//find current time
+//find current date
 var date = new Date();
 
 var yyyy = date.getFullYear().toString();
@@ -90,15 +90,27 @@ var ddChars = dd.split('');
 
 var datestringnow = yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
 
+//find two weeks ago date
+var date_old = new Date();
+
+document.write(date_old.toLocaleString());
+
+date_old.setDate(date_old.getDate() - 14);
+
+document.write(date_old.toLocaleString());
+
+console.log(date_old)
+
+
 
 //Find the gaugeid and waterbody when using the generate new graph button
 $(function () {
     $('#gaugeid').val(window.location.search.split('&')[0].split('=')[1])
 });
 
-$(function () {
-    $('#waterbody').val(window.location.search.split('&')[1].replace(/%20/g,' ').split('=')[1])
-});
+//$(function () {
+//    $('#waterbody').val(window.location.search.split('&')[1].replace(/%20/g || /%25/g || /+/g,' ').split('=')[1])
+//});
 
 //Click funtion to choose gauge on map
 map.on('singleclick', function(evt) {
@@ -174,14 +186,26 @@ map.on('singleclick', function(evt) {
 //                console.log(USGS_url);
 //
 //                console.log(USGS_Data);
-//                console.log(USGS_Count);
+//                console.log(USGS_Count);//find two weeks ago date
+                var date_old = new Date();
+
+                //document.write(date_old.toLocaleString());
+
+                date_old.setDate(date_old.getDate() - 14);
+
+                //document.write(date_old.toLocaleString());
+                date_str = date_old.toISOString();
+                var two_weeks_ago_str = date_str.split('T')[0]
+
+                //console.log(date_old)
+
 
                 //This is for USGS Gauges
                 for (i = 0; i < USGS_Count; i++) {
                     var gaugeID = USGS_Data.documentElement.children[i].attributes['SITE_NO'].value;
                     var waterbody = USGS_Data.documentElement.children[i].attributes['STATION_NM'].value;
                     var urlLink = USGS_Data.documentElement.children[i].attributes['NWISWEB'].value;
-                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/?gaugeid=" + gaugeID +"&waterbody=" + waterbody+"&start=2016-05-31&end=" + datestringnow;
+                    var usgshtml = "http://127.0.0.1:8000/apps/gaugeviewer/usgs/?gaugeid=" + gaugeID +"&waterbody=" + waterbody+"&start=" + two_weeks_ago_str + "&end=" + datestringnow;
                     displayContent += '<tr><td>USGS:\n'+gaugeID +'</td><td>'+ waterbody + '</td><td><a href="'+usgshtml+'">View Data</a></td><td><a href="'+urlLink+'" target="_blank">Go to Website</a></td></tr>';
                     }
                 };
