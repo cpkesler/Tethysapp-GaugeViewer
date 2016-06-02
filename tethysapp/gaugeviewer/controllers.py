@@ -203,6 +203,7 @@ def usgs(request):
         forecast_range = request.GET['forecast_range']
         comid = request.GET['comid']
         forecast_date = request.GET['forecast_date']
+        comid_time = request.GET['comid_time']
 
     else:
         gaugeID = request.GET['gaugeid']
@@ -288,9 +289,17 @@ def usgs(request):
 
     # url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=medium_range&COMID=10375768&lon=-98&lat=38.5&date=2016-05-28&time=06&lag=t00z')
     time_series_list_api = []
-    if comid is not None:
-        url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time=06&lag=t00z'.format(forecast_range, comid, forecast_date))
+    gotComid = False
+    if comid is not None and len(comid) > 0:
+        gotComid = True
+        forecast_size = request.GET['forecast_range']
+        comid_time = "06"
+        if forecast_size == "short":
+            comid_time = request.GET['comid_time']
+
+        url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time))
         data_api = url_api.read()
+        print data_api
 
         x = data_api.split('dateTimeUTC=')
         x.pop(0)
@@ -317,6 +326,7 @@ def usgs(request):
             value2 = float(value1)
             time_series_list_api.append([datetime(year, month, day, hourInt, minuteInt), value2])
             # print time_series_list_api, 'pppppppppppppppppppppppppppppppppppppppppppp'
+        print time_series_list_api
 
         # gotdata_api = False
         # if len(time_series_list_api) > 0:
@@ -417,15 +427,22 @@ def usgs(request):
                                 name='forecast_range',
                                 multiple=False,
                                 options=[('short', 'short'), ('medium', 'medium')],
-                                initial=['medium'],
-                                original=['medium'])
+                                initial=['short'],
+                                original=['short'])
+
+    select_input1 = SelectInput(display_text='Starting Time',
+                                name='comid_time',
+                                multiple=False,
+                                options=[('12:00 am', "00"), ('1:00 am', "01"), ('2:00 am', "02"), ('3:00 am', "03"), ('4:00 am', "04"), ('5:00 am', "05"), ('6:00 am', "06"), ('7:00 am', "07"), ('7:00 am', "07"), ('8:00 am', "08"), ('9:00 am', "09"), ('10:00 am', "10"), ('11:00 am', "11"), ('12:00 pm', "12"), ('1:00 pm', "13"), ('2:00 pm', "14"), ('3:00 pm', "15"), ('4:00 pm', "16"), ('5:00 pm', "17"), ('6:00 pm', "18"), ('7:00 pm', "19"), ('8:00 pm', "20"), ('9:00 pm', "21"), ('10:00 pm', "22"), ('11:00 pm', "23")],
+                                initial=['12'],
+                                original=['12'])
 
     single_button1 = Button(display_text='Graph Forecast',
                            name='forecast',
                            attributes='form=forecast-form',
                            submit=True)
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "text_input1": text_input1, "date_picker3": date_picker3, "select_input": select_input, "forecast_range": forecast_range, "comid": comid, "forecast_date": forecast_date,   "sinlge_button1": single_button1, "timeseries_plot": timeseries_plot, "timeseries_plot_api": timeseries_plot_api, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button, "date_start": date_start, "date_end": date_end}
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "text_input1": text_input1, "date_picker3": date_picker3, "select_input": select_input, "select_input1": select_input1, "forecast_range": forecast_range, "comid": comid, "forecast_date": forecast_date,   "sinlge_button1": single_button1, "timeseries_plot": timeseries_plot, "timeseries_plot_api": timeseries_plot_api, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
     return render(request, 'gaugeviewer/usgs.html', context)
 

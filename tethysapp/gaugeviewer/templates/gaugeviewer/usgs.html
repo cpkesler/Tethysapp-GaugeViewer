@@ -17,6 +17,7 @@
     {% gizmo select_input select_input %}
     {% gizmo text_input text_input1 %}
     {% gizmo date_picker date_picker3 %}
+    {% gizmo select_input select_input1 %}
     {% gizmo button single_button %}
 </form>
 {% endblock %}
@@ -37,13 +38,23 @@
 
 <h3>Streamflow Forecast</h3>
 
-   <h6>Please select a Forecast Range, COMID, and Forecast Date!</h6>
-
-    <p>COMID: {{comid}}</p>
-    <p>Range: {{forecast_range}}</p>
+{% if 'true' in gotComid|lower %}
+   <p>COMID: {{comid}} </p>
+   <p>Range: {{forecast_range}} </p>
    <div>
        {% gizmo plot_view timeseries_plot_api %}
    </div>
+ {% else %}
+   <h6>Please select a Forecast Range, COMID, and Forecast Date!</h6>
+ {% endif%}
+
+<!--<h6>Please select a Forecast Range, COMID, and Forecast Date!</h6>-->
+
+    <!--<p>COMID: {{comid}}</p>-->
+    <!--<p>Range: {{forecast_range}}</p>-->
+   <!--<div>-->
+       <!--{% gizmo plot_view timeseries_plot_api %}-->
+   <!--</div>-->
 
 
 
@@ -53,4 +64,18 @@
 {% block scripts %}
   {{ block.super }}
   <script src="{% static 'gaugeviewer/vendor/export-csv.js' %}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $('#forecast_range'). on('change', function () {
+    if ($('#forecast_range').val() === 'medium') {
+        $('#comid_time').parent().addClass('hidden');
+        $('#comid_time').addClass('hidden');
+
+    }
+    else {
+        $('#comid_time').parent().removeClass('hidden');
+        $('#comid_time').removeClass('hidden');
+    };
+});
+</script>
 {% endblock %}
