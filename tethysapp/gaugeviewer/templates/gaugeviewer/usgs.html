@@ -4,6 +4,21 @@
 
 {% block app_navigation_items %}
   <li><a href="{% url 'gaugeviewer:home' %}">Return Home</a></li>
+<br></br>
+  <p><b>Observed Streamflow Graph</b></p>
+<form action="/apps/gaugeviewer/usgs/" method="get">
+    <input id="gaugeid" name="gaugeid" type="text" value="" class="hidden">
+    <input id="waterbody" name="waterbody" type="text" value="" class="hidden">
+    {% gizmo date_picker date_picker1 %}
+    {% gizmo date_picker date_picker2 %}
+<br></br>
+  <p><b>Forecasted Streamflow Graph</b></p>
+    {% csrf_token %}
+    {% gizmo select_input select_input %}
+    {% gizmo text_input text_input1 %}
+    {% gizmo date_picker date_picker3 %}
+    {% gizmo button single_button %}
+</form>
 {% endblock %}
 
 {% block app_content %}
@@ -11,13 +26,6 @@
   <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
   <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
-<form action="/apps/gaugeviewer/usgs/" method="get">
-    <input id="gaugeid" name="gaugeid" type="text" value="" class="hidden">
-    <input id="waterbody" name="waterbody" type="text" value="" class="hidden">
-    {% gizmo date_picker date_picker1 %}
-    {% gizmo date_picker date_picker2 %}
-    {% gizmo button single_button %}
-</form>
 
 {% if 'true' in gotdata|lower %}
    <div>
