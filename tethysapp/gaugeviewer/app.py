@@ -8,7 +8,7 @@ class Gaugeviewer(TethysAppBase):
 
     name = 'GaugeViewer'
     index = 'gaugeviewer:home'
-    icon = 'gaugeviewer/images/icon.gif'
+    icon = 'gaugeviewer/images/gauge_icon.png'
     package = 'gaugeviewer'
     root_url = 'gaugeviewer'
     color = '#e74c3c'

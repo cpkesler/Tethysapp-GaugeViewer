@@ -199,12 +199,12 @@ def usgs(request):
         comid = request.GET['comid']
         forecast_date = request.GET['forecast_date']
         comid_time = request.GET['comid_time']
-
     else:
         gaugeID = request.GET['gaugeid']
         waterbody = request.GET['waterbody']
         date_start = request.GET['start']
         date_end = request.GET['end']
+
 
     # Find current time and time minus two weeks
     t_now = datetime.now()
@@ -251,8 +251,9 @@ def usgs(request):
         comid_time = "06"
         if forecast_size == "short":
             comid_time = request.GET['comid_time']
-
-        url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time))
+        url = 'https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time)
+        print url
+        url_api = urllib2.urlopen(url)
         data_api = url_api.read()
 
         x = data_api.split('dateTimeUTC=')
@@ -337,7 +338,8 @@ def usgs(request):
 
     comid_input = TextInput(display_text='COMID',
                             name='comid',
-                            initial='', )
+                            initial='',
+                            classes='form-control')
 
     forecast_date_picker = DatePicker(name='forecast_date',
                               display_text='Forecast Date',
@@ -357,9 +359,10 @@ def usgs(request):
     forecast_time_select = SelectInput(display_text='Start Time',
                                 name='comid_time',
                                 multiple=False,
-                                options=[('12:00 am', "00"), ('1:00 am', "01"), ('2:00 am', "02"), ('3:00 am', "03"), ('4:00 am', "04"), ('5:00 am', "05"), ('6:00 am', "06"), ('7:00 am', "07"), ('7:00 am', "07"), ('8:00 am', "08"), ('9:00 am', "09"), ('10:00 am', "10"), ('11:00 am', "11"), ('12:00 pm', "12"), ('1:00 pm', "13"), ('2:00 pm', "14"), ('3:00 pm', "15"), ('4:00 pm', "16"), ('5:00 pm', "17"), ('6:00 pm', "18"), ('7:00 pm', "19"), ('8:00 pm', "20"), ('9:00 pm', "21"), ('10:00 pm', "22"), ('11:00 pm', "23")],
+                                options=[('12:00 am', "00"), ('1:00 am', "01"), ('2:00 am', "02"), ('3:00 am', "03"), ('4:00 am', "04"), ('5:00 am', "05"), ('6:00 am', "06"), ('7:00 am', "07"), ('8:00 am', "08"), ('9:00 am', "09"), ('10:00 am', "10"), ('11:00 am', "11"), ('12:00 pm', "12"), ('1:00 pm', "13"), ('2:00 pm', "14"), ('3:00 pm', "15"), ('4:00 pm', "16"), ('5:00 pm', "17"), ('6:00 pm', "18"), ('7:00 pm', "19"), ('8:00 pm', "20"), ('9:00 pm', "21"), ('10:00 pm', "22"), ('11:00 pm', "23")],
                                 initial=['12'],
                                 original=['12'])
+
 
     context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
