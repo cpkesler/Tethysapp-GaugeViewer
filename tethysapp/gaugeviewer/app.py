@@ -32,12 +32,6 @@ class Gaugeviewer(TethysAppBase):
                     UrlMap(name='usgs',
                            url='usgs',
                            controller='gaugeviewer.controllers.usgs'),
-                    UrlMap(name='python',
-                           url='python',
-                           controller='gaugeviewer.controllers.python'),
-                    # UrlMap(name='usgs',
-                    #        url='usgs1',
-                    #        controller='gaugeviewer.controllers.usgs1'),
                     )
 
         return url_maps

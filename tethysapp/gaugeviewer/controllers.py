@@ -1,5 +1,3 @@
-# This file is contains print comments. Simply uncomment the lines and view the terminal to see output.
-
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
@@ -10,9 +8,6 @@ from tethys_sdk.gizmos import DatePicker
 from tethys_sdk.gizmos import Button
 from tethys_sdk.gizmos import TextInput
 from tethys_sdk.gizmos import SelectInput
-
-import csv
-from django.http import HttpResponse
 
 @login_required()
 def home(request):
@@ -28,16 +23,16 @@ def ahps(request):
     """
     Controller for the app ahps page.
     """
+    # Get values for gaugeID and waterbody
     gaugeID = request.GET['gaugeno']
     waterbody = request.GET['waterbody']
 
+    # URL for getting AHPS data
     url = 'http://water.weather.gov/ahps2/hydrograph_to_xml.php?gage={0}&output=xml'.format(gaugeID.lower())
-    # print url
-
     response = urllib2.urlopen(url)
     data = response.read()
-    # print data
 
+    # Create AHPS list
     display_data = []  #Creates an empty list to contain data for later display
     value = float()
     total = float()
@@ -68,7 +63,7 @@ def ahps(request):
                         if field.get('units') =="cfs":
                             value = float(field.text)
                             total += value
-                        # print field.text, '******'
+                        # print field.text
                     if field.get('timezone') == "UTC":
                         time = field.text
                         time1 = time.replace("T","-")
@@ -87,11 +82,9 @@ def ahps(request):
                     if field.get('name') == "Flow":
                         if field.get('units') == "kcfs":
                             value = float(field.text)*1000
-                            # print value
 
                         if field.get('units') =="cfs":
                             value = float(field.text)
-                        # print field.text, '******'
 
                     if field.get('timezone') == "UTC":
                         time = field.text
@@ -108,10 +101,12 @@ def ahps(request):
 
         display_data.sort()  # Due to XML formatting the sheet must be sorted to place forecasts after observations
 
+    # Check if AHPS flow data exists
     gotdata = False
     if total > 0:
         gotdata = True
 
+    # Plot AHPS flow data
     timeseries_plot = TimeSeries(
             height='500px',
             width='500px',
@@ -124,9 +119,8 @@ def ahps(request):
                 'data': display_data
             }]
     )
-        # print child.tag, child.attrib
-    # print '**********************************************************'
 
+    # Gets stage data in a list
     observed_stage_data = []
     value_stage = float()
     total_stage = float()
@@ -154,10 +148,12 @@ def ahps(request):
 
                 observed_stage_data.append([datetime(year, month, day, hour, minute), value_stage])
 
+    # Check if AHPS stagedata exists
     gotdata_stage = False
     if total_stage > 0:
         gotdata_stage = True
 
+    # Plot AHPS stage data
     timeseries_plot_stage = TimeSeries(
             height='500px',
             width='500px',
@@ -175,7 +171,7 @@ def ahps(request):
 
     return render(request, 'gaugeviewer/ahps.html', context)
 
-
+# Check digits in month and day (i.e. 2016-05-09, not 2016-5-9)
 def check_digit(num):
     num_str = str(num)
     if len(num_str) < 2:
@@ -187,9 +183,8 @@ def usgs(request):
     """
     Controller for the app usgs page.
     """
-    # gaugeID = request.GET['gaugeid']
-    # waterbody = request.GET['waterbody']
 
+    # Get values from gizmos
     start = request.GET.get("start", None)
     comid = None
     forecast_range = None
@@ -210,60 +205,20 @@ def usgs(request):
         waterbody = request.GET['waterbody']
         date_start = request.GET['start']
         date_end = request.GET['end']
-        # forecast_range = request.GET['forecast_range']
-        # comid = request.GET['comid']
-        # forecast_date = request.GET['forecast_date']
 
-    # print forecast_range, '888888888888888888888888888888888888888'
-    # # print comid, '333333333333333333333333333333333'
-    # print forecast_date , '111111111111111111111111111111111'
-
-    # forecast_range = 'medium'
-    # comid = '10375794'
-    # forecast_date = '2016-05-29'
-
-
-    # if request.POST:
-    #     comid = request.POST['comid']
-    #     forecast_date = request.POST['forecast_date']
-
-    # print date_start
-    # print date_end
-    # print '********************************************************'
-    # print gaugeID
-
-    # if request.GET['start']:
-    #     date_start = request.GET['start']
-    # else:
-    #     date_start = request.POST['date_start']
-    #
-    # if request.GET['end']:
-    #     date_end = request.GET['end']
-    # else:
-    #     date_end = request.POST['date_end']
-    #
-    # date_start = request.POST['date_start']
-    # date_end = request.POST['date_end']
-
+    # Find current time and time minus two weeks
     t_now = datetime.now()
     now_str = "{0}-{1}-{2}".format(t_now.year,check_digit(t_now.month),check_digit(t_now.day))
     two_weeks = timedelta(days=14)
     t_2_weeks_ago = t_now - two_weeks
     two_weeks_ago_str = "{0}-{1}-{2}".format(t_2_weeks_ago.year,check_digit(t_2_weeks_ago.month),check_digit(t_2_weeks_ago.day))
 
-    # url = 'http://waterdata.usgs.gov/nwis/uv?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, two_weeks_ago_str, now_str)
-
-
+    # URL for getting USGS data
     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
-    # if date_start <> "yyyy-mm-dd":
-    #     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
-
-    print url
-
     response = urllib2.urlopen(url)
     data = response.read()
-    # print data
 
+    # Get USGS data in a list
     time_series_list = []
     for line in data.splitlines():
         if line.startswith("USGS"):
@@ -281,13 +236,13 @@ def usgs(request):
             hourInt = int(hour)
             minuteInt = int(minute)
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
-            # print time_series_list, 'iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii'
 
+    # Check if USGS data exists for time frame
     gotdata = False
     if len(time_series_list) > 0:
         gotdata = True
 
-    # url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=medium_range&COMID=10375768&lon=-98&lat=38.5&date=2016-05-28&time=06&lag=t00z')
+    # URL for getting forecast data and in a list
     time_series_list_api = []
     gotComid = False
     if comid is not None and len(comid) > 0:
@@ -299,11 +254,9 @@ def usgs(request):
 
         url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time))
         data_api = url_api.read()
-        print data_api
 
         x = data_api.split('dateTimeUTC=')
         x.pop(0)
-
 
         for elm in x:
             info = elm.split(' ')
@@ -317,50 +270,19 @@ def usgs(request):
             month = int(timedate[1])
             day = int(timedate[2])
             timetime = time4[1]
-            hour = timetime[0]
-            minute = timetime[1]
+            time_split = timetime.split(':')
+            time_minute = time_split[1].replace(':', '')
+            hour = time_split[0]
+            minute = time_minute[1]
             hourInt = int(hour)
             minuteInt = int(minute)
             value = info[7].split('<')
             value1 = value[0].replace('>','')
             value2 = float(value1)
             time_series_list_api.append([datetime(year, month, day, hourInt, minuteInt), value2])
-            # print time_series_list_api, 'pppppppppppppppppppppppppppppppppppppppppppp'
-        print time_series_list_api
 
-        # gotdata_api = False
-        # if len(time_series_list_api) > 0:
-        #     gotdata_api = True
-
-    # def getNWMWaterML(config, ID, date_start):
-    #     url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
-    #                           '&lon=-98&lat=38.5&date=' + date_start + '&time=06&lag=t00z')
-    #     # url_api = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=medium_range&COMID=10376606&lon=-98&lat=38.5&date=2016-05-28&time=06&lag=t00z')
-    #     # data = url_api.read()
-    #
-    #
-    #     x = data.split('dateTimeUTC=')
-    #     x.pop(0)
-    #
-    #     time_series_list_api = []
-    #     for elm in x:
-    #         info = elm.split(' ')
-    #         time1 = info[0].replace('T',' ')
-    #         time2 = time1.replace('"','')
-    #         time = time2[:-3]
-    #         val = info[7].split('<')
-    #         value = val[0].replace('>','')
-    #         time_series_list_api.append([time, value])
-    #         print time_series_list_api, '000000000000000000000000000000'
-    #
-    #     return time_series_list_api
-    #
-    #
-    # print getNWMWaterML('medium', '10376606', '2016-05-28')
-    # time_series_api = getNWMWaterML('medium', '10376606', '2016-05-28')
-
-    # print time_series_list
-    timeseries_plot = TimeSeries(
+    # Plot USGS data
+    usgs_plot = TimeSeries(
         height='500px',
         width='500px',
         engine='highcharts',
@@ -373,7 +295,8 @@ def usgs(request):
         }]
     )
 
-    timeseries_plot_api = TimeSeries(
+    # Plot forecast data
+    nwm_forecast_plot = TimeSeries(
         height='500px',
         width='500px',
         engine='highcharts',
@@ -386,7 +309,8 @@ def usgs(request):
         }]
     )
 
-    date_picker1 = DatePicker(name='date_start',
+    # Gizmos
+    usgs_start_date_picker = DatePicker(name='date_start',
                              display_text='Start Date',
                              autoclose=True,
                              format='yyyy-mm-dd',
@@ -394,9 +318,9 @@ def usgs(request):
                              start_view='month',
                              today_button=True,
                              # initial= t_2_weeks_ago.strftime('%Y-%m-%d'))
-                             initial= '2016-05-29')
+                             initial= two_weeks_ago_str)
 
-    date_picker2 = DatePicker(name='date_end',
+    usgs_end_date_picker = DatePicker(name='date_end',
                              display_text='End Date',
                              autoclose=True,
                              format='yyyy-mm-dd',
@@ -406,157 +330,37 @@ def usgs(request):
                              # initial=t_now.strftime('%Y-%m-%d'))
                              initial= now_str)
 
-    single_button = Button(display_text='Generate New Graphs',
+    generate_graphs_button = Button(display_text='Generate New Graphs',
                            name='Generate New Graph',
                            attributes={""},
                            submit=True)
 
-    text_input1 = TextInput(display_text='COMID',
+    comid_input = TextInput(display_text='COMID',
                             name='comid',
                             initial='', )
 
-    date_picker3 = DatePicker(name='forecast_date',
+    forecast_date_picker = DatePicker(name='forecast_date',
                               display_text='Forecast Date',
                               autoclose=True,
                               format='yyyy-mm-dd',
                               start_view='month',
                               today_button=True,
-                              initial='2016-05-29')
+                              initial= now_str)
 
-    select_input = SelectInput(display_text='Forecast Size',
+    forecast_range_select = SelectInput(display_text='Forecast Size',
                                 name='forecast_range',
                                 multiple=False,
                                 options=[('short', 'short'), ('medium', 'medium')],
                                 initial=['short'],
                                 original=['short'])
 
-    select_input1 = SelectInput(display_text='Starting Time',
+    forecast_time_select = SelectInput(display_text='Start Time',
                                 name='comid_time',
                                 multiple=False,
                                 options=[('12:00 am', "00"), ('1:00 am', "01"), ('2:00 am', "02"), ('3:00 am', "03"), ('4:00 am', "04"), ('5:00 am', "05"), ('6:00 am', "06"), ('7:00 am', "07"), ('7:00 am', "07"), ('8:00 am', "08"), ('9:00 am', "09"), ('10:00 am', "10"), ('11:00 am', "11"), ('12:00 pm', "12"), ('1:00 pm', "13"), ('2:00 pm', "14"), ('3:00 pm', "15"), ('4:00 pm', "16"), ('5:00 pm', "17"), ('6:00 pm', "18"), ('7:00 pm', "19"), ('8:00 pm', "20"), ('9:00 pm', "21"), ('10:00 pm', "22"), ('11:00 pm', "23")],
                                 initial=['12'],
                                 original=['12'])
 
-    single_button1 = Button(display_text='Graph Forecast',
-                           name='forecast',
-                           attributes='form=forecast-form',
-                           submit=True)
-
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "text_input1": text_input1, "date_picker3": date_picker3, "select_input": select_input, "select_input1": select_input1, "forecast_range": forecast_range, "comid": comid, "forecast_date": forecast_date,   "sinlge_button1": single_button1, "timeseries_plot": timeseries_plot, "timeseries_plot_api": timeseries_plot_api, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
     return render(request, 'gaugeviewer/usgs.html', context)
-
-
-# def usgs1(request):
-#     """
-#     Controller for the app home page.
-#     """
-#     gaugeID = 10163000
-#     date_start = request.POST['date_start']
-#     date_end = request.POST['date_end']
-#
-#     url_dl = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
-#     # print url_dl
-#
-#     response = urllib2.urlopen(url_dl)
-#     data = response.read()
-#     # print data
-#
-#     time_series_list = []
-#     for line in data.splitlines():
-#         if line.startswith("USGS"):
-#             data_array = line.split('\t')
-#             time_str = data_array[2]
-#             value_str = data_array[4]
-#             if value_str == "Ice":
-#                 value_str = "0"
-#             time_str = time_str.replace(" ","-")
-#             time_str_array = time_str.split("-")
-#             year = int(time_str_array[0])
-#             month = int(time_str_array[1])
-#             day = int(time_str_array[2])
-#             hour, minute = time_str_array[3].split(":")
-#             hourInt = int(hour)
-#             minuteInt = int(minute)
-#             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
-#
-#     # print time_series_list
-#
-#     gotdata = False
-#     if len(time_series_list) > 0:
-#         gotdata = True
-#
-#     print time_series_list
-#     timeseries_plot = TimeSeries(
-#         height='500px',
-#         width='500px',
-#         engine='highcharts',
-#         title='Streamflow Plot',
-#         y_axis_title='Flow',
-#         y_axis_units='cfs',
-#         series=[{
-#             'name': 'Streamflow',
-#             'data': time_series_list
-#         }]
-#     )
-#
-#     date_picker1 = DatePicker(name='date_start',
-#                               display_text='Start Date',
-#                               autoclose=True,
-#                               format='yyyy-mm-dd',
-#                               start_date='2/15/2014',
-#                               start_view='month',
-#                               today_button=True,
-#                               initial='yyyy-mm-dd')
-#
-#     date_picker2 = DatePicker(name='date_end',
-#                               display_text='End Date',
-#                               autoclose=True,
-#                               format='yyyy-mm-dd',
-#                               start_date='2/15/2014',
-#                               start_view='month',
-#                               today_button=True,
-#                               initial='yyyy-mm-dd')
-#
-#     single_button = Button(display_text='Generate New Graph',
-#                            name='Generate New Graph',
-#                            attributes={""},
-#                            submit=True)
-#
-#
-#
-#     context = {"gaugeid": gaugeID, "date_start": date_start, "date_end": date_end, "time_series_list": time_series_list, "timeseries_plot": timeseries_plot, "gotdata": gotdata, "date_picker1": date_picker1, "date_picker2": date_picker2, "single_button": single_button}
-#
-#     return render(request, 'gaugeviewer/usgs1.html', context)
-
-@login_required()
-def python(request):
-    """
-    Controller for the app home page.
-    """
-    def getNWMWaterML(config, ID, date_start):
-        url = urllib2.urlopen('https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config=' + config + '_range&COMID=' + ID +
-                              '&lon=-98&lat=38.5&date=' + date_start + '&time=06&lag=t00z')
-        data = url.read()
-
-
-        x = data.split('dateTimeUTC=')
-        x.pop(0)
-
-        time_series_list = []
-        max_value_list = []
-        for elm in x:
-            info = elm.split(' ')
-            time = info[0].replace('T',' ')
-            val = info[7].split('<')
-            value = val[0].replace('>','')
-            time_series_list.append([time, value])
-
-        return time_series_list
-
-    print getNWMWaterML('medium', '10376606', '2016-05-28')
-
-    context = {}
-
-    return render(request, 'gaugeviewer/python.html', context)
-

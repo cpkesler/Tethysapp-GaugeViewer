@@ -988,5 +988,3 @@ Xn.prototype.changed=Xn.prototype.u;Xn.prototype.dispatchEvent=Xn.prototype.b;Xn
 bo.prototype.setProperties=bo.prototype.C;bo.prototype.unset=bo.prototype.R;bo.prototype.changed=bo.prototype.u;bo.prototype.dispatchEvent=bo.prototype.b;bo.prototype.getRevision=bo.prototype.K;bo.prototype.on=bo.prototype.I;bo.prototype.once=bo.prototype.L;bo.prototype.un=bo.prototype.J;bo.prototype.unByKey=bo.prototype.M;
   return OPENLAYERS.ol;
 }));
-
-

@@ -3,7 +3,7 @@
 {% load tethys_gizmos %}
 
 {% block app_navigation_items %}
-  <li><a href="{% url 'gaugeviewer:home' %}">Return Home</a></li>
+  <li><a href="{% url 'gaugeviewer:home' %}">Return to Map</a></li>
 {% endblock %}
 
 {% block app_content %}
@@ -17,7 +17,7 @@
    {% gizmo plot_view timeseries_plot %}
    </div>
  {% else %}
-   <h3>There is no flow data available for this location!</h3>
+   <h6>There is no flow data available for this location!</h6>
  {% endif%}
 
 <br>
@@ -27,7 +27,7 @@
    {% gizmo plot_view timeseries_plot_stage %}
    </div>
  {% else %}
-   <h3>There is no stage data available for this location!</h3>
+   <h6>There is no stage data available for this location!</h6>
  {% endif%}
 {% endblock %}
 
