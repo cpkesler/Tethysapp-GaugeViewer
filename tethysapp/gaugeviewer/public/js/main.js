@@ -108,10 +108,6 @@ $(function () {
     $('#gaugeid').val(window.location.search.split('&')[0].split('=')[1])
 });
 
-$(function () {
-    $('#waterbody').val(window.location.search.split('&')[1].replace(/%20/g || /%25/g,' ').split('=')[1])
-});
-
 //Click funtion to choose gauge on map
 map.on('singleclick', function(evt) {
     $(element).popover('destroy');
