@@ -313,6 +313,7 @@ def usgs(request):
     # Gizmos
     usgs_start_date_picker = DatePicker(name='date_start',
                              display_text='Start Date',
+                             end_date='0d',
                              autoclose=True,
                              format='yyyy-mm-dd',
                              # start_date='2015-12-01',
@@ -323,6 +324,7 @@ def usgs(request):
 
     usgs_end_date_picker = DatePicker(name='date_end',
                              display_text='End Date',
+                             end_date='0d',
                              autoclose=True,
                              format='yyyy-mm-dd',
                              # start_date='2016-02-01',
