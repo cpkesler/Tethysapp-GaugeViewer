@@ -6,7 +6,7 @@ class Gaugeviewer(TethysAppBase):
     Tethys app class for GaugeViewer.
     """
 
-    name = 'GaugeViewer'
+    name = 'USGS and AHPS GaugeViewer'
     index = 'gaugeviewer:home'
     icon = 'gaugeviewer/images/gauge_icon.png'
     package = 'gaugeviewer'

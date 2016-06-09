@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d9dbbe52-ab22-477c-b39d-444f5623f3f0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/gaugeviewer/controllers.py" afterPath="$PROJECT_DIR$/tethysapp/gaugeviewer/controllers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/gaugeviewer/templates/gaugeviewer/usgs.html" afterPath="$PROJECT_DIR$/tethysapp/gaugeviewer/templates/gaugeviewer/usgs.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tethysapp/gaugeviewer/app.py" afterPath="$PROJECT_DIR$/tethysapp/gaugeviewer/app.py" />
     </list>
     <ignored path="tethysapp-gaugeviewer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,11 +45,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="usgs.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="usgs.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tethysapp/gaugeviewer/public/js/usgs.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="45">
               <caret line="3" column="86" selection-start-line="3" selection-start-column="86" selection-end-line="3" selection-end-column="86" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tethysapp/gaugeviewer/app.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -103,11 +111,11 @@
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/templates/gaugeviewer/ahps.html" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/public/css/main.css" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/public/js/ol.js" />
-        <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/app.py" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/public/js/main.js" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/controllers.py" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/templates/gaugeviewer/usgs.html" />
         <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/public/js/usgs.js" />
+        <option value="$PROJECT_DIR$/tethysapp/gaugeviewer/app.py" />
       </list>
     </option>
   </component>
@@ -792,13 +800,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tethysapp/gaugeviewer/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="27" selection-start-line="11" selection-start-column="27" selection-end-line="11" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tethysapp/gaugeviewer/templates/gaugeviewer/ahps.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -844,6 +845,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="86" selection-start-line="3" selection-start-column="86" selection-end-line="3" selection-end-column="86" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tethysapp/gaugeviewer/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="26" selection-start-line="8" selection-start-column="26" selection-end-line="8" selection-end-column="26" />
           <folding />
         </state>
       </provider>
