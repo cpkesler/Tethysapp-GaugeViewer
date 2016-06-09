@@ -251,11 +251,15 @@ def usgs(request):
         comid_time = "06"
         if forecast_size == "short":
             comid_time = request.GET['comid_time']
+        forecast_date_end = "2016-06-02"
+        if forecast_range == "analysis_assim":
+            forecast_date_end = request.GET['forecast_date_end']
         url = 'https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time)
+        url = 'https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}&geom=channel_rt&variable=streamflow&COMID={1}&lon=-108.992844207494&lat=33.6334750800406&date={2}&endDate={3}&time={4}&lag=t00z'.format(forecast_range, comid, forecast_date, forecast_date_end, comid_time)
         print url
         url_api = urllib2.urlopen(url)
         data_api = url_api.read()
-
+        # print data_api
         x = data_api.split('dateTimeUTC=')
         x.pop(0)
 
@@ -344,19 +348,27 @@ def usgs(request):
                             classes='form-control')
 
     forecast_date_picker = DatePicker(name='forecast_date',
-                              display_text='Forecast Date',
+                              display_text='Forecast Date Start',
                               autoclose=True,
                               format='yyyy-mm-dd',
                               start_view='month',
                               today_button=True,
                               initial= now_str)
 
+    forecast_date_end_picker = DatePicker(name='forecast_date_end',
+                                      display_text='Forecast Date End',
+                                      autoclose=True,
+                                      format='yyyy-mm-dd',
+                                      start_view='month',
+                                      today_button=True,
+                                      initial=now_str)
+
     forecast_range_select = SelectInput(display_text='Forecast Size',
                                 name='forecast_range',
                                 multiple=False,
-                                options=[('short', 'short'), ('medium', 'medium')],
-                                initial=['short'],
-                                original=['short'])
+                                options=[('Analysis and Assimilation', 'analysis_assim'), ('Short', 'short_range'), ('Medium', 'medium_range')],
+                                initial=['analysis_assim'],
+                                original=['analysis_assim'])
 
     forecast_time_select = SelectInput(display_text='Start Time',
                                 name='comid_time',
@@ -366,6 +378,6 @@ def usgs(request):
                                 original=['12'])
 
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
+    context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_date_end_picker": forecast_date_end_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
     return render(request, 'gaugeviewer/usgs.html', context)
