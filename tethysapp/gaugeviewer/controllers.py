@@ -254,8 +254,7 @@ def usgs(request):
         forecast_date_end = "2016-06-02"
         if forecast_range == "analysis_assim":
             forecast_date_end = request.GET['forecast_date_end']
-        url = 'https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}_range&COMID={1}&lon=-98&lat=38.5&date={2}&time={3}&lag=t00z'.format(forecast_range, comid, forecast_date, comid_time)
-        url = 'https://appsdev.hydroshare.org/apps/nwm-forecasts/waterml/?config={0}&geom=channel_rt&variable=streamflow&COMID={1}&lon=-108.992844207494&lat=33.6334750800406&date={2}&endDate={3}&time={4}&lag=t00z'.format(forecast_range, comid, forecast_date, forecast_date_end, comid_time)
+        url = 'https://apps.hydroshare.org/apps/nwm-forecasts/api/GetWaterML/?config={0}&geom=channel_rt&variable=streamflow&COMID={1}&lon=&lat=&startDate={2}&endDate={3}&time={4}&lag='.format(forecast_range, comid, forecast_date, forecast_date_end, comid_time)
         print url
         url_api = urllib2.urlopen(url)
         data_api = url_api.read()
@@ -349,6 +348,7 @@ def usgs(request):
 
     forecast_date_picker = DatePicker(name='forecast_date',
                               display_text='Forecast Date Start',
+                              end_date='0d',
                               autoclose=True,
                               format='yyyy-mm-dd',
                               start_view='month',
@@ -357,6 +357,7 @@ def usgs(request):
 
     forecast_date_end_picker = DatePicker(name='forecast_date_end',
                                       display_text='Forecast Date End',
+                                      end_date='0d',
                                       autoclose=True,
                                       format='yyyy-mm-dd',
                                       start_view='month',
