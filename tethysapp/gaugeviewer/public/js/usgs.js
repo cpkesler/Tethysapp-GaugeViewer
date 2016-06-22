@@ -1,7 +1,7 @@
 $(function() { //wait for page to load
     $('#comid_time').parent().addClass('hidden');
 
-//inputs on usgs menu appear/disappear for analysis & assimilation, short, and mediumm
+//inputs on usgs menu appear/disappear for analysis & assimilation, short, and medium
     $('#forecast_range').on('change', function () {
         if ($('#forecast_range').val() === 'medium_range') {
             $('#comid_time').parent().addClass('hidden');

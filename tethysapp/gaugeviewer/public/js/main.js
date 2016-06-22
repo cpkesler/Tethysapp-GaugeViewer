@@ -51,6 +51,10 @@ var USGS_Gauges = new ol.layer.Tile({
     source:USGS_Source
     }); //Thanks to http://jsfiddle.net/GFarkas/tr0s6uno/ for getting the layer working
 
+//Set opacity of layers
+AHPS_Gauges.setOpacity(0.7);
+USGS_Gauges.setOpacity(0.7);
+
 sources = [AHPS_Source,USGS_Source];
 layers = [baseLayer,AHPS_Gauges, USGS_Gauges];
 
@@ -67,6 +71,9 @@ var map = new ol.Map({
     layers: layers,
     view: view,
 });
+
+//Zoom slider
+map.addControl(new ol.control.ZoomSlider());
 
 var element = document.getElementById('popup');
 
