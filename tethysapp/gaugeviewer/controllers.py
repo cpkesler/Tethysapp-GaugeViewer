@@ -337,7 +337,7 @@ def usgs(request):
                              initial= now_str)
 
     generate_graphs_button = Button(display_text='Generate New Graphs',
-                           name='Generate New Graph',
+                           name='generate_graphs',
                            attributes={""},
                            submit=True)
 
