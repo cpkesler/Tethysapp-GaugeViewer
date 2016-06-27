@@ -14,7 +14,11 @@ def home(request):
     """
     Controller for the app home page.
     """
-    context = {}
+    location_input = TextInput(display_text='Enter Search Location',
+                            name='location_input',
+                            initial='',
+                            classes='form-control')
+    context = {"location_input":location_input}
 
     return render(request, 'gaugeviewer/home.html', context)
 
@@ -345,6 +349,7 @@ def usgs(request):
                             name='comid',
                             initial='',
                             classes='form-control')
+    
 
     forecast_date_picker = DatePicker(name='forecast_date',
                               display_text='Forecast Date Start',
@@ -379,6 +384,6 @@ def usgs(request):
                                 original=['12'])
 
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_date_end_picker": forecast_date_end_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
+    context = {"gaugeid": gaugeID,"waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_date_end_picker": forecast_date_end_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
     return render(request, 'gaugeviewer/usgs.html', context)

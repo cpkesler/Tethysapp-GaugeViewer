@@ -84,7 +84,58 @@ var popup = new ol.Overlay({
 });
 
 map.addOverlay(popup);
+function run_geocoder(){
+        g = new google.maps.Geocoder();
+        search_location = document.getElementById('location_input').value;
+        g.geocode({'address':search_location},geocoder_success);
+    }
+function geocoder_success(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+        r=results;
+        flag_geocoded=true;
+        Lat = results[0].geometry.location.lat();
+        Lon = results[0].geometry.location.lng();
 
+        var dbPoint = {
+            "type": "Point",
+            "coordinates": [Lon, Lat]
+        }
+
+        var coords = ol.proj.transform(dbPoint.coordinates, 'EPSG:4326','EPSG:3857');
+        addClickPoint(coords);
+        CenterMap(Lat,Lon);
+        //map.getView().setZoom(14);
+        run_point_indexing_service([Lon,Lat]);
+//        alert(results[0].formatted_address);
+    } else {
+        alert("Geocode was not successful for the following reason: " + status);
+    }
+}
+function reverse_geocode(coord){
+    var latlon = new google.maps.LatLng(coord[1],coord[0]);
+    var g = new google.maps.Geocoder();
+    g.geocode({'location':latlon}, reverse_geocode_success);
+}
+
+function reverse_geocode_success(results, status) {
+    if (status == google.maps.GeocoderStatus.OK) {
+        var location = results[1].formatted_address;
+        if (gnis_name != null) {
+            location = gnis_name + ", " + location;
+        }
+
+    } else {
+        document.getElementById("location_input").value = "Location Not Available";
+    }
+}
+
+function handle_search_key(e) {
+    // Handle a key press in the location search text box.
+    // This handles pressing the enter key to initiate the search.
+    if (e.keyCode == 13) {
+        run_geocoder();
+    }
+}
 //find current date
 var date = new Date();
 
@@ -215,6 +266,7 @@ map.on('singleclick', function(evt) {
             }
         });
 
+    
   map.on('pointermove', function(evt) {
     if (evt.dragging) {
       return;
