@@ -3,6 +3,7 @@
 {% load staticfiles %}
 
 {% block app_content %}
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPgvDUpbEwcbg9C0cRTfDtDa-Vj4WBwI0" ></script>
     <script src="{% static 'gaugeviewer/css/ol.css' %}" type="text/css"></script>
 
     <!-- This extra bit of style defines the size of the "map" div tag area that shows up later -->
@@ -13,7 +14,7 @@
       }
     </style>
 
-  	<!-- Show some information to the user using basic HTML -->
+    <!-- Show some information to the user using basic HTML -->
     <!--<h2>HydroCatalog</h2>-->
 
     <!-- Specify a div tag area that will hold the map itself. -->
@@ -32,6 +33,8 @@
   <li class="title">Layers to Display</li>
 <div align = "center">
   <li><input type="checkbox" onClick="AHPS_Gauges.setVisible(!AHPS_Gauges.getVisible());"  id="ch_AHPS_Gauges" name="AHPS_Gauges" checked>AHPS Gauges (Red)</li>
-  <li><input type="checkbox" onClick="USGS_Gauges.setVisible(!USGS_Gauges.getVisible());"  id="ch_USGS_Gauges" name="USGS_Gauges" checked>USGS Gauges (Blue)</li>
+  <li><input type="checkbox" onClick="USGS_Gauges.setVisible(!USGS_Gauges.getVisible());"  id="ch_USGS_Gauges" name="USGS_Gauges" checked>USGS Gauges (Blue)</li><br/>
+  <input type="text" class="form-control" placeholder="Enter Area of Interest" id="location_input" name="location_input"></input></li><br/>
+  <input type="button" class="btn btn-primary" id="location_search" name="location_search" onClick="run_geocoder();" value="Click to zoom to area"></input>
 </div>
 {% endblock %}
