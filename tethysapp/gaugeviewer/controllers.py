@@ -417,7 +417,7 @@ def usgs(request):
             'name': 'Streamflow',
             'data': time_series_list,
         },{
-            'name': 'Streamflow',
+            'name': 'Forecasted Streamflow',
             'data': time_series_list_api,
         }]
     )
