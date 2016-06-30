@@ -305,7 +305,6 @@ def usgs(request):
     """
 
     # Get values from gizmos
-
     start = request.GET.get("start", None)
     comid = None
     forecast_range = None
@@ -336,8 +335,6 @@ def usgs(request):
 
     # URL for getting USGS data
     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
-
-
     response = urllib2.urlopen(url)
     data = response.read()
 
@@ -420,7 +417,7 @@ def usgs(request):
             'name': 'Streamflow',
             'data': time_series_list,
         },{
-            'name': 'Forecasted Streamflow',
+            'name': 'Streamflow',
             'data': time_series_list_api,
         }]
     )
@@ -462,9 +459,8 @@ def usgs(request):
                              # initial=t_now.strftime('%Y-%m-%d'))
                              initial= now_str)
 
-
     generate_graphs_button = Button(display_text='Generate New Graphs',
-                           name='Generate New Graph',
+                           name='generate_graphs',
                            attributes={""},
                            submit=True)
 
@@ -472,6 +468,7 @@ def usgs(request):
                             name='comid',
                             initial='',
                             classes='form-control')
+    
 
     forecast_date_picker = DatePicker(name='forecast_date',
                               display_text='Forecast Date Start',
@@ -506,6 +503,6 @@ def usgs(request):
                                 original=['12'])
 
 
-    context = {"gaugeid": gaugeID, "waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_date_end_picker": forecast_date_end_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
+    context = {"gaugeid": gaugeID,"waterbody": waterbody, "comid_input": comid_input, "forecast_date_picker": forecast_date_picker, "forecast_date_end_picker": forecast_date_end_picker, "forecast_range_select": forecast_range_select, "forecast_time_select": forecast_time_select, "forecast_range": forecast_range, "comid": comid, "forecast_date_picker": forecast_date_picker, "generate_graphs_button": generate_graphs_button, "usgs_plot": usgs_plot, "nwm_forecast_plot": nwm_forecast_plot, "gotdata": gotdata, "usgs_start_date_picker": usgs_start_date_picker, "usgs_end_date_picker": usgs_end_date_picker, "date_start": date_start, "date_end": date_end, "gotComid": gotComid}
 
     return render(request, 'gaugeviewer/usgs.html', context)
