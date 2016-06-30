@@ -31,6 +31,7 @@
   <p>Gauge ID: {{gaugeid}}</p>
   <p>Waterbody: {{waterbody}}</p>
   <p>Link to Website: <a href="http://waterdata.usgs.gov/nwis/inventory/?site_no={{gaugeid}}" target="_blank">View Website</a></p></p>
+
   {% if 'true' in gotdata|lower %}
    <div>
    </div>
@@ -42,9 +43,11 @@
    <p>Foreacst Range: {{forecast_range}} </p>
  {% else %}
    <h6>To see the NWC Forecast,Please select a Forecast Range, COMID, and Forecast Date!</h6>
+ {% endif%}
 
 {% gizmo plot_view usgs_plot %}
- {% endif%}
+
+
 {% endblock %}
 
 {% block scripts %}
