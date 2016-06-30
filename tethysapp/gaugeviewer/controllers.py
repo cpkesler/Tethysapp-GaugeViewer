@@ -138,7 +138,6 @@ def ahps(request):
         url = 'https://apps.hydroshare.org/apps/nwm-forecasts/api/GetWaterML/?config={0}&geom=channel_rt&variable=streamflow&COMID={1}&lon=&lat=&startDate={2}&endDate={3}&time={4}&lag='.format(
             forecast_size, comid, forecast_date, forecast_date_end, comid_time)
 
-
         url_api = urllib2.urlopen(url)
         data_api = url_api.read()
         # print data_api
