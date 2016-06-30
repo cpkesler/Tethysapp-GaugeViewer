@@ -9,7 +9,7 @@
 
 <form id="eventForm" action="/apps/gaugeviewer/usgs/" method="get">
     <input id="gaugeid" name="gaugeid" type="text" value="" class="hidden">
-    <input id="waterbody" name="waterbody" type="text" value={{waterbody}} class="hidden">
+    <input id="waterbody" name="waterbody" type="text" value="{{waterbody}}" class="hidden">
     {% gizmo date_picker usgs_start_date_picker %}
     {% gizmo date_picker usgs_end_date_picker %}
 
