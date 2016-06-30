@@ -30,10 +30,10 @@
 
 {% block app_navigation_items %}
 
-  <li class="title">Layers to Display</li>
-<div align = "center">
-  <li><input type="checkbox" onClick="AHPS_Gauges.setVisible(!AHPS_Gauges.getVisible());"  id="ch_AHPS_Gauges" name="AHPS_Gauges" checked>AHPS Gauges (Red)</li>
-  <li><input type="checkbox" onClick="USGS_Gauges.setVisible(!USGS_Gauges.getVisible());"  id="ch_USGS_Gauges" name="USGS_Gauges" checked>USGS Gauges (Blue)</li><br/>
+  <li class="title" align="left">Layers to Display</li>
+<div align = "left">
+  <li><label><input type="checkbox" onClick="AHPS_Gauges.setVisible(!AHPS_Gauges.getVisible());"  id="ch_AHPS_Gauges" name="AHPS_Gauges" checked>AHPS Gauges (Red)</label></li>
+  <li><label><input type="checkbox" onClick="USGS_Gauges.setVisible(!USGS_Gauges.getVisible());"  id="ch_USGS_Gauges" name="USGS_Gauges" checked>USGS Gauges (Blue)</label></li><br/>
   <input type="text" class="form-control" placeholder="Enter Area of Interest" id="location_input" name="location_input"></input></li><br/>
   <input type="button" class="btn btn-primary" id="location_search" name="location_search" onClick="run_geocoder();" value="Click to zoom to area"></input>
 </div>
