@@ -9,15 +9,13 @@ function dataCall(inputURL) {
         return result;
 }
 
-
-
 //Here we are declaring the projection object for Web Mercator
 var projection = ol.proj.get('EPSG:3857');
 
 //Define Basemap
 //Here we are declaring the raster layer as a separate object to put in the map later
 var baseLayer = new ol.layer.Tile({
-    source: new ol.source.MapQuest({layer: 'osm'})
+    source: new ol.source.OSM({})
 });
 
 //Define all WMS Sources:
