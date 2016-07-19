@@ -383,7 +383,6 @@ def usgs(request):
         print url
         url_api = urllib2.urlopen(url)
         data_api = url_api.read()
-        # print data_api
         x = data_api.split('dateTimeUTC=')
         x.pop(0)
 
