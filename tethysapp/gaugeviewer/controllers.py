@@ -336,14 +336,18 @@ def usgs(request):
     url = 'http://nwis.waterdata.usgs.gov/usa/nwis/uv/?cb_00060=on&format=rdb&site_no={0}&period=&begin_date={1}&end_date={2}'.format(gaugeID, date_start, date_end)
     response = urllib2.urlopen(url)
     data = response.read()
+    print url
 
     # Get USGS data in a list
     time_series_list = []
     for line in data.splitlines():
         if line.startswith("USGS"):
             data_array = line.split('\t')
+            # data_array = line.split()
             time_str = data_array[2]
             value_str = data_array[4]
+            if value_str == '':
+                continue
             if value_str == "Ice":
                 value_str = "0"
             time_str = time_str.replace(" ","-")
@@ -355,6 +359,8 @@ def usgs(request):
             hourInt = int(hour)
             minuteInt = int(minute)
             time_series_list.append([datetime(year, month, day, hourInt, minuteInt), float(value_str)])
+
+    # print time_series_list
 
     # Check if USGS data exists for time frame
     gotdata = False
